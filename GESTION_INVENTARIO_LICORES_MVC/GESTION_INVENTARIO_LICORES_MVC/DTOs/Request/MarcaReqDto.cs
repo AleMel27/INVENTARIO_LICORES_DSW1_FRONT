@@ -4,8 +4,6 @@ namespace GESTION_INVENTARIO_LICORES_MVC.DTOs.Request
 {
     public class MarcaReqDto
     {
-
-
         [Required(ErrorMessage = "El nombre es obligatorio.")]
         [StringLength(
             100,
@@ -18,7 +16,5 @@ namespace GESTION_INVENTARIO_LICORES_MVC.DTOs.Request
             ErrorMessage = "El país de origen no puede superar los 50 caracteres."
         )]
         public string? PaisOrigen { get; set; }
-
-
     }
 }

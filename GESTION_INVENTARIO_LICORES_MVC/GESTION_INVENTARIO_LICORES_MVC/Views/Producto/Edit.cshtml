@@ -1,0 +1,105 @@
+﻿@model GESTION_INVENTARIO_LICORES_MVC.DTOs.Request.ProductoUpdateReqDto
+
+@{
+    ViewData["Title"] = "Editar Producto";
+    long idProducto = ViewData["IdProducto"] != null ? (long)ViewData["IdProducto"] : 0;
+    string codigoProducto = ViewData["CodigoProducto"] as string ?? "";
+}
+
+<div class="container mt-4" style="max-width: 750px;">
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>@TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-warning text-dark">
+            <h4 class="mb-0"><i class="bi bi-pencil-square me-2"></i>Editar Producto #@idProducto</h4>
+        </div>
+        <div class="card-body">
+            <form asp-action="Edit" asp-route-id="@idProducto" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold">Código</label>
+                        <input type="text" class="form-control bg-light" value="@codigoProducto" readonly />
+                        <small class="text-muted">El código no es modificable.</small>
+                    </div>
+
+                    <div class="col-md-8 mb-3">
+                        <label asp-for="Nombre" class="form-label fw-bold">Nombre <span class="text-danger">*</span></label>
+                        <input asp-for="Nombre" class="form-control" placeholder="Ej. Whisky Red Label 750ml" autocomplete="off" />
+                        <span asp-validation-for="Nombre" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="IdCategoria" class="form-label fw-bold">Categoría <span class="text-danger">*</span></label>
+                        <select asp-for="IdCategoria" class="form-select" asp-items="ViewBag.Categorias">
+                            <option value="">-- Seleccione Categoría --</option>
+                        </select>
+                        <span asp-validation-for="IdCategoria" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="IdMarca" class="form-label fw-bold">Marca <span class="text-danger">*</span></label>
+                        <select asp-for="IdMarca" class="form-select" asp-items="ViewBag.Marcas">
+                            <option value="">-- Seleccione Marca --</option>
+                        </select>
+                        <span asp-validation-for="IdMarca" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Descripcion" class="form-label fw-bold">Descripción</label>
+                    <textarea asp-for="Descripcion" class="form-control" rows="2" placeholder="Detalles u observaciones del producto..."></textarea>
+                    <span asp-validation-for="Descripcion" class="text-danger small"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label asp-for="CapacidadMl" class="form-label fw-bold">Capacidad (ml) <span class="text-danger">*</span></label>
+                        <input asp-for="CapacidadMl" type="number" class="form-control" />
+                        <span asp-validation-for="CapacidadMl" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label asp-for="GradoAlcoholico" class="form-label fw-bold">Grado Alc. (%)</label>
+                        <input asp-for="GradoAlcoholico" type="number" step="0.1" class="form-control" />
+                        <span asp-validation-for="GradoAlcoholico" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label asp-for="PrecioVenta" class="form-label fw-bold">Precio (S/) <span class="text-danger">*</span></label>
+                        <input asp-for="PrecioVenta" type="number" step="0.01" class="form-control" />
+                        <span asp-validation-for="PrecioVenta" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label asp-for="StockMinimo" class="form-label fw-bold">Stock Mínimo</label>
+                        <input asp-for="StockMinimo" type="number" class="form-control" />
+                        <span asp-validation-for="StockMinimo" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-1"></i> Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-warning">
+                        <i class="bi bi-check-lg me-1"></i> Actualizar Producto
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

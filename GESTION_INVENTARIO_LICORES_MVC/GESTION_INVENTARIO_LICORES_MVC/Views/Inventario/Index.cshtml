@@ -1,0 +1,261 @@
+﻿@model GESTION_INVENTARIO_LICORES_MVC.Models.InventarioIndexViewModel
+
+@{
+    ViewData["Title"] = "Gestión de Inventario";
+}
+
+<div class="container-fluid py-3">
+    <!-- Header y Acciones -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0"><i class="bi bi-boxes"></i> Control de Inventario</h2>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevoInventario">
+            <i class="bi bi-plus-lg"></i> Asignar Producto a Almacén
+        </button>
+    </div>
+
+    <!-- Alertas -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-1"></i> @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-1"></i> @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Filtros de Búsqueda -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <form method="get" asp-action="Index" class="row g-2">
+                <div class="col-md-3">
+                    <input type="text" asp-for="Filtro.NombreProducto" class="form-control" placeholder="Buscar por Producto..." />
+                </div>
+                <div class="col-md-3">
+                    <input type="text" asp-for="Filtro.CodigoProducto" class="form-control" placeholder="Buscar por Código..." />
+                </div>
+                <div class="col-md-3">
+                    <select asp-for="Filtro.IdAlmacen" class="form-select">
+                        <option value="">-- Todos los Almacenes --</option>
+                        @foreach (var alm in Model.Almacenes)
+                        {
+                            <option value="@alm.IdAlmacen">@alm.Nombre</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-dark w-100">
+                        <i class="bi bi-search"></i> Buscar
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabla de Inventario -->
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="ps-3">ID</th>
+                            <th>Código</th>
+                            <th>Producto</th>
+                            <th>Almacén</th>
+                            <th class="text-center">Stock Actual</th>
+                            <th class="text-end pe-3">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Resultado.Items != null && Model.Resultado.Items.Any())
+                        {
+                            @foreach (var item in Model.Resultado.Items)
+                            {
+                                <tr>
+                                    <td class="ps-3 fw-bold text-muted">#@item.IdInventario</td>
+                                    <td><span class="badge bg-light text-dark border">@item.Producto.Codigo</span></td>
+                                    <td class="fw-bold">@item.Producto.Nombre</td>
+                                    <td>
+                                        <i class="bi bi-building me-1 text-secondary"></i>@item.Almacen.Nombre
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge fs-6 @(item.StockActual <= 5 ? "bg-danger" : "bg-success")">
+                                            @item.StockActual u.
+                                        </span>
+                                    </td>
+                                    <td class="text-end pe-3">
+                                        <button type="button" class="btn btn-sm btn-outline-warning me-1"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modalAjuste"
+                                                data-id="@item.IdInventario"
+                                                data-producto="@item.Producto.Nombre"
+                                                data-almacen="@item.Almacen.Nombre"
+                                                data-stock="@item.StockActual">
+                                            <i class="bi bi-sliders"></i> Ajustar Stock
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center py-4 text-muted">
+                                    <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                                    No se encontraron registros de inventario.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Paginación -->
+        @if (Model.Resultado.TotalPages > 1)
+        {
+            <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3">
+                <small class="text-muted">Página @Model.Resultado.PageNumber de @Model.Resultado.TotalPages</small>
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item @(!Model.Resultado.HasPreviousPage ? "disabled" : "")">
+                        <a class="page-link" asp-action="Index"
+                           asp-route-PageNumber="@(Model.Resultado.PageNumber - 1)"
+                           asp-route-NombreProducto="@Model.Filtro.NombreProducto"
+                           asp-route-CodigoProducto="@Model.Filtro.CodigoProducto"
+                           asp-route-IdAlmacen="@Model.Filtro.IdAlmacen">Anterior</a>
+                    </li>
+                    <li class="page-item @(!Model.Resultado.HasNextPage ? "disabled" : "")">
+                        <a class="page-link" asp-action="Index"
+                           asp-route-PageNumber="@(Model.Resultado.PageNumber + 1)"
+                           asp-route-NombreProducto="@Model.Filtro.NombreProducto"
+                           asp-route-CodigoProducto="@Model.Filtro.CodigoProducto"
+                           asp-route-IdAlmacen="@Model.Filtro.IdAlmacen">Siguiente</a>
+                    </li>
+                </ul>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- MODAL: ASIGNAR PRODUCTO A ALMACÉN -->
+<div class="modal fade" id="modalNuevoInventario" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-plus-circle me-1"></i> Asignar Producto a Almacén</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Producto</label>
+                        <select name="IdProducto" class="form-select" required>
+                            <option value="">-- Seleccione Producto --</option>
+                            @foreach (var prod in Model.Productos)
+                            {
+                                <option value="@prod.IdProducto">[@prod.Codigo] @prod.Nombre</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Almacén</label>
+                        <select name="IdAlmacen" class="form-select" required>
+                            <option value="">-- Seleccione Almacén --</option>
+                            @foreach (var alm in Model.Almacenes)
+                            {
+                                <option value="@alm.IdAlmacen">@alm.Nombre (@alm.Ubicacion)</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: AJUSTE DE INVENTARIO -->
+<div class="modal fade" id="modalAjuste" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="formAjuste" asp-action="Ajustar" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="idInventarioAjuste" name="idInventario" value="" />
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title"><i class="bi bi-sliders me-1"></i> Ajustar Stock de Inventario</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-light border mb-3">
+                        <p class="mb-1"><strong>Producto:</strong> <span id="lblProducto"></span></p>
+                        <p class="mb-1"><strong>Almacén:</strong> <span id="lblAlmacen"></span></p>
+                        <p class="mb-0"><strong>Stock Actual:</strong> <span id="lblStock" class="badge bg-secondary"></span></p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Tipo de Movimiento</label>
+                        <select name="IdTipoMovimiento" class="form-select" required>
+                            <option value="">-- Seleccione Tipo --</option>
+                            @foreach (var tm in Model.TiposMovimiento)
+                            {
+                                <option value="@tm.IdTipoMovimiento">@tm.Nombre</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Cantidad</label>
+                        <input type="number" name="Cantidad" class="form-control" min="1" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Motivo</label>
+                        <textarea name="Motivo" class="form-control" rows="2" maxlength="255" required placeholder="Ej: Merma por rotura, Corrección de conteo fisíco..."></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Referencia (Opcional)</label>
+                        <input type="text" name="Referencia" class="form-control" maxlength="100" placeholder="Ej: AUD-2026-01" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-warning">Procesar Ajuste</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var modalAjuste = document.getElementById('modalAjuste');
+            modalAjuste.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var id = button.getAttribute('data-id');
+                var producto = button.getAttribute('data-producto');
+                var almacen = button.getAttribute('data-almacen');
+                        var stock = button.getAttribute('data-stock');
+
+                document.getElementById('idInventarioAjuste').value = id;
+                document.getElementById('lblProducto').textContent = producto;
+                document.getElementById('lblAlmacen').textContent = almacen;
+                    document.getElementById('lblStock').textContent = stock + ' unidades';
+                    });
+                });
+    </script>
+}

@@ -8,7 +8,5 @@
         public string Correo { get; set; } = string.Empty;
         public RolRespDto Rol { get; set; } = new();
         public bool Estado { get; set; }
-
-
     }
 }

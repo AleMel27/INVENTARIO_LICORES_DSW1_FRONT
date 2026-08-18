@@ -35,8 +35,5 @@ namespace GESTION_INVENTARIO_LICORES_MVC.DTOs.Request
             ErrorMessage = "Debe seleccionar un rol válido."
         )]
         public long IdRol { get; set; }
-
-
-
     }
 }

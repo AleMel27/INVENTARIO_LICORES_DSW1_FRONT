@@ -5,8 +5,6 @@ namespace GESTION_INVENTARIO_LICORES_MVC.DTOs.Request
     public class ProveedorUpdateReqDto
     {
 
-
-
         [Required(ErrorMessage = "El RUC es obligatorio.")]
         [RegularExpression(
            @"^[0-9]{11}$",
@@ -41,9 +39,6 @@ namespace GESTION_INVENTARIO_LICORES_MVC.DTOs.Request
             ErrorMessage = "La dirección no puede superar los 255 caracteres."
         )]
         public string? Direccion { get; set; }
-
-
-
 
     }
 }

@@ -1,0 +1,49 @@
+﻿@model GESTION_INVENTARIO_LICORES_MVC.DTOs.Response.ProveedorRespDto
+
+@{
+    ViewData["Title"] = "Detalles del Proveedor";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
+            <div class="card shadow">
+                <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0"><i class="bi bi-info-circle me-2"></i>Detalles del Proveedor</h4>
+                    <span class="badge @(Model.Estado ? "bg-success" : "bg-secondary") fs-6">
+                        @(Model.Estado ? "Activo" : "Inactivo")
+                    </span>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4 text-muted">ID Proveedor:</dt>
+                        <dd class="col-sm-8 fw-bold">#@Model.IdProveedor</dd>
+
+                        <dt class="col-sm-4 text-muted">RUC:</dt>
+                        <dd class="col-sm-8">@Model.Ruc</dd>
+
+                        <dt class="col-sm-4 text-muted">Razón Social:</dt>
+                        <dd class="col-sm-8">@Model.RazonSocial</dd>
+
+                        <dt class="col-sm-4 text-muted">Teléfono:</dt>
+                        <dd class="col-sm-8">@(string.IsNullOrWhiteSpace(Model.Telefono) ? "-" : Model.Telefono)</dd>
+
+                        <dt class="col-sm-4 text-muted">Correo:</dt>
+                        <dd class="col-sm-8">@(string.IsNullOrWhiteSpace(Model.Correo) ? "-" : Model.Correo)</dd>
+
+                        <dt class="col-sm-4 text-muted">Dirección:</dt>
+                        <dd class="col-sm-8">@(string.IsNullOrWhiteSpace(Model.Direccion) ? "-" : Model.Direccion)</dd>
+                    </dl>
+                </div>
+                <div class="card-footer bg-light d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-1"></i> Volver a la Lista
+                    </a>
+                    <a asp-action="Edit" asp-route-id="@Model.IdProveedor" class="btn btn-warning">
+                        <i class="bi bi-pencil-square me-1"></i> Editar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

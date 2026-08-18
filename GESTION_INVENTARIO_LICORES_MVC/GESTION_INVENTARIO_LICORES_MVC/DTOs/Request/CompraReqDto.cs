@@ -4,7 +4,6 @@ namespace GESTION_INVENTARIO_LICORES_MVC.DTOs.Request
 {
     public class CompraReqDto
     {
-
         [Range(
             1,
             long.MaxValue,
@@ -52,7 +51,5 @@ namespace GESTION_INVENTARIO_LICORES_MVC.DTOs.Request
             ErrorMessage = "Debe agregar al menos un producto a la compra."
         )]
         public List<DetalleCompraReqDto> Detalles { get; set; } = [];
-
-
     }
 }

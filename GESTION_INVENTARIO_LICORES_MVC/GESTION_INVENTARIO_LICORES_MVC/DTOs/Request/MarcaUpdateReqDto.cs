@@ -4,7 +4,6 @@ namespace GESTION_INVENTARIO_LICORES_MVC.DTOs.Request
 {
     public class MarcaUpdateReqDto
     {
-
         [Required(ErrorMessage = "El nombre es obligatorio.")]
         [StringLength(
            100,
@@ -20,6 +19,5 @@ namespace GESTION_INVENTARIO_LICORES_MVC.DTOs.Request
         {
             get; set;
         }
-
-        }
+    }
 }

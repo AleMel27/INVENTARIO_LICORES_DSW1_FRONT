@@ -2,11 +2,7 @@
 {
     public class CompraResumenRespDto
     {
-
-
         public long IdCompra { get; set; }
         public string NumeroComprobante { get; set; } = string.Empty;
-
-
     }
 }

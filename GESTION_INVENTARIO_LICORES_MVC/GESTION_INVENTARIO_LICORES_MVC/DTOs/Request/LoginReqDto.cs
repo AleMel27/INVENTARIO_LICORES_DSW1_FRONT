@@ -21,8 +21,5 @@ namespace GESTION_INVENTARIO_LICORES_MVC.DTOs.Request
             ErrorMessage = "La contraseña no puede superar los 100 caracteres."
         )]
         public string Password { get; set; } = string.Empty;
-
-
-
     }
 }

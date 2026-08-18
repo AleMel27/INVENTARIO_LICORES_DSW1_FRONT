@@ -1,36 +1,49 @@
-@model CategoriaUpdateReqDto
+@model GESTION_INVENTARIO_LICORES_MVC.DTOs.Request.CategoriaUpdateReqDto
 
 @{
-    ViewData["Title"] = "Editar categoria";
-    long idCategoria = Convert.ToInt64(ViewData["IdCategoria"]);
+    ViewData["Title"] = "Editar Categoría";
+    var idCategoria = ViewData["IdCategoria"];
 }
 
-<h1>Editar categoria</h1>
+<div class="container mt-4" style="max-width: 600px;">
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>@TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
 
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger">@TempData["Error"]</div>
-}
+    <div class="card shadow-sm">
+        <div class="card-header bg-warning text-dark">
+            <h4 class="card-title mb-0">Editar Categoría #@idCategoria</h4>
+        </div>
+        <div class="card-body">
+            <form asp-action="Edit" asp-route-id="@idCategoria" method="post">
+                @Html.AntiForgeryToken()
 
-<form asp-action="Edit" asp-route-id="@idCategoria" method="post">
-    @Html.AntiForgeryToken()
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-    <div class="mb-3">
-        <label asp-for="Nombre" class="form-label"></label>
-        <input asp-for="Nombre" class="form-control" />
-        <span asp-validation-for="Nombre" class="text-danger"></span>
+                <div class="mb-3">
+                    <label asp-for="Nombre" class="form-label fw-bold">Nombre *</label>
+                    <input asp-for="Nombre" class="form-control" />
+                    <span asp-validation-for="Nombre" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Descripcion" class="form-label">Descripción</label>
+                    <textarea asp-for="Descripcion" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Descripcion" class="text-danger small"></span>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-warning">Actualizar Cambios</button>
+                </div>
+            </form>
+        </div>
     </div>
-
-    <div class="mb-3">
-        <label asp-for="Descripcion" class="form-label"></label>
-        <textarea asp-for="Descripcion" class="form-control"></textarea>
-        <span asp-validation-for="Descripcion" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Guardar</button>
-    <a asp-action="Index" class="btn btn-secondary">Volver</a>
-</form>
+</div>
 
 @section Scripts {
     @{

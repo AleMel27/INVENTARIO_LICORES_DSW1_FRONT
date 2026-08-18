@@ -2,11 +2,8 @@
 {
     public class ProveedorResumenRespDto
     {
-
-
         public long IdProveedor { get; set; }
         public string Ruc { get; set; } = string.Empty;
         public string RazonSocial { get; set; } = string.Empty;
-
     }
 }

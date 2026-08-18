@@ -2,7 +2,6 @@
 {
     public class CompraRespDto
     {
-
         public long IdCompra { get; set; }
 
         public ProveedorResumenRespDto Proveedor { get; set; } = new();

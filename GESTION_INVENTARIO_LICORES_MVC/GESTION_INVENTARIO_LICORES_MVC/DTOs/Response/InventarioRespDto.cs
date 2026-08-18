@@ -10,6 +10,5 @@
 
         public int StockActual { get; set; }
 
-
     }
 }

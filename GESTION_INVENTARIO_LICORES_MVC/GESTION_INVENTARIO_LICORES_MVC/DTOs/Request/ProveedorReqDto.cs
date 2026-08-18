@@ -40,8 +40,5 @@ namespace GESTION_INVENTARIO_LICORES_MVC.DTOs.Request
         )]
         public string? Direccion { get; set; }
 
-
-
-
     }
 }

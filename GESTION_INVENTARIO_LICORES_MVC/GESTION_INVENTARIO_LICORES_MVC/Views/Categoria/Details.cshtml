@@ -1,24 +1,41 @@
-@model CategoriaRespDto
+@model GESTION_INVENTARIO_LICORES_MVC.DTOs.Response.CategoriaRespDto
 
 @{
-    ViewData["Title"] = "Detalle de categoria";
+    ViewData["Title"] = "Detalles de Categoría";
 }
 
-<h1>Detalle de categoria</h1>
+<div class="container mt-4" style="max-width: 600px;">
+    <div class="card shadow-sm">
+        <div class="card-header bg-info text-white">
+            <h4 class="card-title mb-0">Detalles de Categoría #@Model.IdCategoria</h4>
+        </div>
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-4">ID Categoría:</dt>
+                <dd class="col-sm-8">#@Model.IdCategoria</dd>
 
-<dl class="row">
-    <dt class="col-sm-2">Id</dt>
-    <dd class="col-sm-10">@Model.IdCategoria</dd>
+                <dt class="col-sm-4">Nombre:</dt>
+                <dd class="col-sm-8">@Model.Nombre</dd>
 
-    <dt class="col-sm-2">Nombre</dt>
-    <dd class="col-sm-10">@Model.Nombre</dd>
+                <dt class="col-sm-4">Descripción:</dt>
+                <dd class="col-sm-8">@(string.IsNullOrEmpty(Model.Descripcion) ? "Sin descripción" : Model.Descripcion)</dd>
 
-    <dt class="col-sm-2">Descripcion</dt>
-    <dd class="col-sm-10">@Model.Descripcion</dd>
-
-    <dt class="col-sm-2">Estado</dt>
-    <dd class="col-sm-10">@(Model.Estado ? "Activo" : "Inactivo")</dd>
-</dl>
-
-<a asp-action="Edit" asp-route-id="@Model.IdCategoria" class="btn btn-warning">Edit</a>
-<a asp-action="Index" class="btn btn-secondary">Volver</a>
+                <dt class="col-sm-4">Estado:</dt>
+                <dd class="col-sm-8">
+                    @if (Model.Estado)
+                    {
+                        <span class="badge bg-success">Activo</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Inactivo</span>
+                    }
+                </dd>
+            </dl>
+        </div>
+        <div class="card-footer d-flex justify-content-end gap-2">
+            <a asp-action="Index" class="btn btn-secondary">Volver al listado</a>
+            <a asp-action="Edit" asp-route-id="@Model.IdCategoria" class="btn btn-warning">Editar</a>
+        </div>
+    </div>
+</div>

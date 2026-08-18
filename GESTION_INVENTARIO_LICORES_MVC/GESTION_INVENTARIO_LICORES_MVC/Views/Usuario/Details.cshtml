@@ -1,0 +1,61 @@
+﻿@model GESTION_INVENTARIO_LICORES_MVC.DTOs.Response.UsuarioRespDto
+
+@{
+    ViewData["Title"] = "Detalles del Usuario";
+}
+
+<div class="container mt-4" style="max-width: 650px;">
+    <div class="card shadow-sm">
+        <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0"><i class="bi bi-person-lines-fill me-2"></i>Detalles del Usuario</h4>
+            <span class="badge bg-light text-dark fs-6">ID #@Model.IdUsuario</span>
+        </div>
+        <div class="card-body">
+            <dl class="row mb-0 fs-6">
+                <dt class="col-sm-4 text-muted">Nombres:</dt>
+                <dd class="col-sm-8 fw-bold">@Model.Nombres</dd>
+
+                <hr class="my-2" />
+
+                <dt class="col-sm-4 text-muted">Apellidos:</dt>
+                <dd class="col-sm-8 fw-bold">@Model.Apellidos</dd>
+
+                <hr class="my-2" />
+
+                <dt class="col-sm-4 text-muted">Correo Electrónico:</dt>
+                <dd class="col-sm-8">@Model.Correo</dd>
+
+                <hr class="my-2" />
+
+                <dt class="col-sm-4 text-muted">Rol Asignado:</dt>
+                <dd class="col-sm-8">
+                    <span class="badge bg-info text-dark fs-6">
+                        @(Model.Rol != null ? Model.Rol.Nombre : "Sin Rol")
+                    </span>
+                </dd>
+
+                <hr class="my-2" />
+
+                <dt class="col-sm-4 text-muted">Estado:</dt>
+                <dd class="col-sm-8">
+                    @if (Model.Estado)
+                    {
+                        <span class="badge bg-success">Activo</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Inactivo</span>
+                    }
+                </dd>
+            </dl>
+        </div>
+        <div class="card-footer bg-light d-flex justify-content-between">
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Volver al listado
+            </a>
+            <a asp-action="Edit" asp-route-id="@Model.IdUsuario" class="btn btn-warning">
+                <i class="bi bi-pencil-square me-1"></i> Editar
+            </a>
+        </div>
+    </div>
+</div>

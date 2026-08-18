@@ -19,7 +19,12 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(int pageNumber = 1)
+        public async Task<IActionResult> Index(
+            int pageNumber = 1,
+            string? nombre = null,
+            int? estado = null,
+            string orden = "DESC"
+        )
         {
             HttpClient client = CrearCliente();
 
@@ -30,8 +35,33 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
 
             pageNumber = pageNumber < 1 ? 1 : pageNumber;
 
-            HttpResponseMessage response = await client.GetAsync($"Categoria?pageNumber={pageNumber}");
+            int estadoFinal = 0;
+
+            if (Request.Query.ContainsKey("estado") && int.TryParse(Request.Query["estado"], out int estadoQuery))
+            {
+                estadoFinal = estadoQuery;
+            }
+            else if (estado.HasValue)
+            {
+                estadoFinal = estado.Value;
+            }
+
+            var queryParams = new List<string>
+            {
+                $"pageNumber={pageNumber}",
+                $"estado={estadoFinal}",
+                $"orden={Uri.EscapeDataString(orden ?? "DESC")}"
+            };
+
+            if (!string.IsNullOrWhiteSpace(nombre))
+            {
+                queryParams.Add($"nombre={Uri.EscapeDataString(nombre.Trim())}");
+            }
+
+            string queryString = string.Join("&", queryParams);
+            HttpResponseMessage response = await client.GetAsync($"Categoria?{queryString}");
             string content = await response.Content.ReadAsStringAsync();
+
             PaginatedRespDto<CategoriaRespDto>? respuesta =
                 DeserializarContenido<PaginatedRespDto<CategoriaRespDto>>(content);
 
@@ -45,10 +75,14 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
                 TempData["Error"] = ObtenerMensajeErrorHttp(
                     response.StatusCode,
                     content,
-                    "No se pudo obtener el listado de categorias."
+                    "No se pudo obtener el listado de categorías."
                 );
-                return View(new PaginatedRespDto<CategoriaRespDto> { PageNumber = pageNumber });
+                respuesta = new PaginatedRespDto<CategoriaRespDto> { PageNumber = pageNumber };
             }
+
+            ViewData["CurrentNombre"] = nombre;
+            ViewData["CurrentEstado"] = estadoFinal;
+            ViewData["CurrentOrden"] = string.Equals(orden, "ASC", StringComparison.OrdinalIgnoreCase) ? "ASC" : "DESC";
 
             return View(respuesta);
         }
@@ -73,7 +107,7 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
 
             if (response.StatusCode == HttpStatusCode.NotFound)
             {
-                TempData["Error"] = ObtenerMensaje(content, "No se encontro la categoria solicitada.");
+                TempData["Error"] = ObtenerMensaje(content, "No se encontró la categoría solicitada.");
                 return RedirectToAction(nameof(Index));
             }
 
@@ -82,17 +116,16 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
                 TempData["Error"] = ObtenerMensajeErrorHttp(
                     response.StatusCode,
                     content,
-                    "No se pudo obtener la categoria solicitada."
+                    "No se pudo obtener la categoría solicitada."
                 );
                 return RedirectToAction(nameof(Index));
             }
 
-            CategoriaRespDto? categoria =
-                DeserializarContenido<CategoriaRespDto>(content);
+            CategoriaRespDto? categoria = DeserializarContenido<CategoriaRespDto>(content);
 
             if (categoria == null)
             {
-                TempData["Error"] = "No se pudo interpretar la categoria recibida.";
+                TempData["Error"] = "No se pudo interpretar la categoría recibida.";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -141,12 +174,12 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
                 TempData["Error"] = ObtenerMensajeErrorHttp(
                     response.StatusCode,
                     content,
-                    "No se pudo registrar la categoria."
+                    "No se pudo registrar la categoría."
                 );
                 return View(dto);
             }
 
-            TempData["Success"] = ObtenerMensaje(content, "Categoria registrada correctamente.");
+            TempData["Success"] = ObtenerMensaje(content, "Categoría registrada correctamente.");
             return RedirectToAction(nameof(Index));
         }
 
@@ -170,7 +203,7 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
 
             if (response.StatusCode == HttpStatusCode.NotFound)
             {
-                TempData["Error"] = ObtenerMensaje(content, "No se encontro la categoria solicitada.");
+                TempData["Error"] = ObtenerMensaje(content, "No se encontró la categoría solicitada.");
                 return RedirectToAction(nameof(Index));
             }
 
@@ -179,17 +212,16 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
                 TempData["Error"] = ObtenerMensajeErrorHttp(
                     response.StatusCode,
                     content,
-                    "No se pudo obtener la categoria para editar."
+                    "No se pudo obtener la categoría para editar."
                 );
                 return RedirectToAction(nameof(Index));
             }
 
-            CategoriaRespDto? categoria =
-                DeserializarContenido<CategoriaRespDto>(content);
+            CategoriaRespDto? categoria = DeserializarContenido<CategoriaRespDto>(content);
 
             if (categoria == null)
             {
-                TempData["Error"] = "No se pudo interpretar la categoria recibida.";
+                TempData["Error"] = "No se pudo interpretar la categoría recibida.";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -232,7 +264,7 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
 
             if (response.StatusCode == HttpStatusCode.NotFound)
             {
-                TempData["Error"] = ObtenerMensaje(content, "No se encontro la categoria solicitada.");
+                TempData["Error"] = ObtenerMensaje(content, "No se encontró la categoría solicitada.");
                 return RedirectToAction(nameof(Index));
             }
 
@@ -241,19 +273,19 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
                 TempData["Error"] = ObtenerMensajeErrorHttp(
                     response.StatusCode,
                     content,
-                    "No se pudo actualizar la categoria."
+                    "No se pudo actualizar la categoría."
                 );
                 ViewData["IdCategoria"] = id;
                 return View(dto);
             }
 
-            TempData["Success"] = ObtenerMensaje(content, "Categoria actualizada correctamente.");
+            TempData["Success"] = ObtenerMensaje(content, "Categoría actualizada correctamente.");
             return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ChangeStatus(long id)
+        public async Task<IActionResult> ChangeStatus(long id, bool? estadoActual)
         {
             HttpClient client = CrearCliente();
 
@@ -262,9 +294,30 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
                 return RedirigirALogin();
             }
 
+            bool nuevoEstado = true;
+            if (estadoActual.HasValue)
+            {
+                nuevoEstado = !estadoActual.Value;
+            }
+            else
+            {
+                HttpResponseMessage getResp = await client.GetAsync($"Categoria/{id}");
+                if (getResp.IsSuccessStatusCode)
+                {
+                    string getContent = await getResp.Content.ReadAsStringAsync();
+                    CategoriaRespDto? cat = DeserializarContenido<CategoriaRespDto>(getContent);
+                    if (cat != null)
+                    {
+                        nuevoEstado = !cat.Estado;
+                    }
+                }
+            }
+
+            string requestUri = $"Categoria/{id}/estado?estado={nuevoEstado.ToString().ToLower()}";
+
             HttpRequestMessage request = new HttpRequestMessage(
                 new HttpMethod("PATCH"),
-                $"Categoria/{id}/estado"
+                requestUri
             );
 
             HttpResponseMessage response = await client.SendAsync(request);
@@ -280,12 +333,16 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
                 TempData["Error"] = ObtenerMensajeErrorHttp(
                     response.StatusCode,
                     content,
-                    "No se pudo cambiar el estado de la categoria."
+                    "No se pudo cambiar el estado de la categoría."
                 );
                 return RedirectToAction(nameof(Index));
             }
 
-            TempData["Success"] = ObtenerMensaje(content, "Estado de la categoria actualizado correctamente.");
+            TempData["Success"] = ObtenerMensaje(
+                content,
+                $"Categoría {(nuevoEstado ? "activada" : "desactivada")} correctamente."
+            );
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -311,7 +368,7 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
 
         private IActionResult RedirigirALogin()
         {
-            TempData["Error"] = "Debe iniciar sesion para continuar.";
+            TempData["Error"] = "Debe iniciar sesión para continuar.";
             return RedirectToAction("Index", "Home");
         }
 
@@ -379,10 +436,10 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
 
             return statusCode switch
             {
-                HttpStatusCode.BadRequest => "La solicitud enviada no es valida.",
-                HttpStatusCode.Forbidden => "No tiene permisos para realizar esta operacion.",
-                HttpStatusCode.NotFound => "No se encontro el recurso solicitado.",
-                HttpStatusCode.InternalServerError => "Ocurrio un error en el servidor.",
+                HttpStatusCode.BadRequest => "La solicitud enviada no es válida.",
+                HttpStatusCode.Forbidden => "No tiene permisos para realizar esta operación.",
+                HttpStatusCode.NotFound => "No se encontró el recurso solicitado.",
+                HttpStatusCode.InternalServerError => "Ocurrió un error interno en el servidor.",
                 _ => mensajePorDefecto
             };
         }

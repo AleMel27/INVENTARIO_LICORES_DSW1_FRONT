@@ -1,0 +1,78 @@
+﻿@model GESTION_INVENTARIO_LICORES_MVC.DTOs.Request.ProveedorReqDto
+
+@{
+    ViewData["Title"] = "Crear Proveedor";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
+            
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>@TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-truck me-2"></i>Registrar Nuevo Proveedor</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Ruc" class="form-label fw-bold"></label>
+                                <input asp-for="Ruc" class="form-control" placeholder="11 dígitos" maxlength="11" autofocus />
+                                <span asp-validation-for="Ruc" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="RazonSocial" class="form-label fw-bold"></label>
+                                <input asp-for="RazonSocial" class="form-control" placeholder="Ej. Licores del Perú S.A.C." />
+                                <span asp-validation-for="RazonSocial" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Telefono" class="form-label fw-bold"></label>
+                                <input asp-for="Telefono" class="form-control" placeholder="Ej. 987654321" />
+                                <span asp-validation-for="Telefono" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Correo" class="form-label fw-bold"></label>
+                                <input asp-for="Correo" class="form-control" type="email" placeholder="contacto@empresa.com" />
+                                <span asp-validation-for="Correo" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Direccion" class="form-label fw-bold"></label>
+                            <input asp-for="Direccion" class="form-control" placeholder="Ej. Av. Principal 456, Lima" />
+                            <span asp-validation-for="Direccion" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-1"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle me-1"></i> Guardar Proveedor
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

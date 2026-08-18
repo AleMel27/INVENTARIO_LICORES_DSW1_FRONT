@@ -4,8 +4,6 @@ namespace GESTION_INVENTARIO_LICORES_MVC.DTOs.Request
 {
     public class ProductoReqDto
     {
-
-
         [Range(
             1,
             long.MaxValue,
@@ -69,12 +67,5 @@ namespace GESTION_INVENTARIO_LICORES_MVC.DTOs.Request
             ErrorMessage = "El stock mínimo no puede ser negativo."
         )]
         public int StockMinimo { get; set; }
-
-
-
-
-
-
-
     }
 }

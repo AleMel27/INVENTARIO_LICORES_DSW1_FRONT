@@ -2,7 +2,6 @@
 {
     public class ProductoRespDto
     {
-
         public long IdProducto { get; set; }
 
         public string Codigo { get; set; } = string.Empty;
@@ -18,7 +17,5 @@
         public MarcaResumenRespDto Marca { get; set; } = new();
 
         public bool Estado { get; set; }
-
-
     }
 }

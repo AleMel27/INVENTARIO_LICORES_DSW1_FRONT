@@ -4,7 +4,6 @@ namespace GESTION_INVENTARIO_LICORES_MVC.DTOs.Request
 {
     public class InventarioReqDto
     {
-
         [Range(
             1,
             long.MaxValue,
@@ -18,6 +17,5 @@ namespace GESTION_INVENTARIO_LICORES_MVC.DTOs.Request
             ErrorMessage = "Debe seleccionar un almacén válido."
         )]
         public long IdAlmacen { get; set; }
-
     }
 }

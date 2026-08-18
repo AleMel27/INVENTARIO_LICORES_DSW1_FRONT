@@ -4,9 +4,6 @@ namespace GESTION_INVENTARIO_LICORES_MVC.DTOs.Request
 {
     public class UsuarioReqDto
     {
-
-
-
         [Range(
            1,
            long.MaxValue,
@@ -45,10 +42,5 @@ namespace GESTION_INVENTARIO_LICORES_MVC.DTOs.Request
             ErrorMessage = "La contraseña debe tener entre 8 y 100 caracteres."
         )]
         public string Password { get; set; } = string.Empty;
-
-
-
-
-
     }
 }

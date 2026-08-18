@@ -1,0 +1,82 @@
+﻿@model GESTION_INVENTARIO_LICORES_MVC.DTOs.Response.ProductoRespDto
+
+@{
+    ViewData["Title"] = "Detalles del Producto";
+}
+
+<div class="container mt-4" style="max-width: 700px;">
+    <div class="card shadow-sm">
+        <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0"><i class="bi bi-box-seam me-2"></i>Detalles del Producto</h4>
+            <span class="badge bg-light text-dark fs-6">ID #@Model.IdProducto</span>
+        </div>
+        <div class="card-body">
+            <dl class="row mb-0 fs-6">
+                <dt class="col-sm-4 text-muted">Código:</dt>
+                <dd class="col-sm-8"><span class="badge bg-secondary fs-6">@Model.Codigo</span></dd>
+
+                <hr class="my-2" />
+
+                <dt class="col-sm-4 text-muted">Nombre:</dt>
+                <dd class="col-sm-8 fw-bold">@Model.Nombre</dd>
+
+                <hr class="my-2" />
+
+                <dt class="col-sm-4 text-muted">Categoría:</dt>
+                <dd class="col-sm-8">@(Model.Categoria != null ? Model.Categoria.Nombre : "Sin Categoría")</dd>
+
+                <hr class="my-2" />
+
+                <dt class="col-sm-4 text-muted">Marca:</dt>
+                <dd class="col-sm-8">@(Model.Marca != null ? Model.Marca.Nombre : "Sin Marca")</dd>
+
+                <hr class="my-2" />
+
+                <dt class="col-sm-4 text-muted">Descripción:</dt>
+                <dd class="col-sm-8">@(string.IsNullOrEmpty(Model.Descripcion) ? "Sin descripción" : Model.Descripcion)</dd>
+
+                <hr class="my-2" />
+
+                <dt class="col-sm-4 text-muted">Capacidad:</dt>
+                <dd class="col-sm-8">@Model.CapacidadMl ml</dd>
+
+                <hr class="my-2" />
+
+                <dt class="col-sm-4 text-muted">Grado Alcohólico:</dt>
+                <dd class="col-sm-8">@Model.GradoAlcoholico %</dd>
+
+                <hr class="my-2" />
+
+                <dt class="col-sm-4 text-muted">Precio de Venta:</dt>
+                <dd class="col-sm-8 text-success fw-bold">S/ @Model.PrecioVenta.ToString("N2")</dd>
+
+                <hr class="my-2" />
+
+                <dt class="col-sm-4 text-muted">Stock Mínimo:</dt>
+                <dd class="col-sm-8">@Model.StockMinimo unidades</dd>
+
+                <hr class="my-2" />
+
+                <dt class="col-sm-4 text-muted">Estado:</dt>
+                <dd class="col-sm-8">
+                    @if (Model.Estado)
+                    {
+                        <span class="badge bg-success">Activo</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Inactivo</span>
+                    }
+                </dd>
+            </dl>
+        </div>
+        <div class="card-footer bg-light d-flex justify-content-between">
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Volver al listado
+            </a>
+            <a asp-action="Edit" asp-route-id="@Model.IdProducto" class="btn btn-warning">
+                <i class="bi bi-pencil-square me-1"></i> Editar
+            </a>
+        </div>
+    </div>
+</div>

@@ -60,8 +60,5 @@ namespace GESTION_INVENTARIO_LICORES_MVC.DTOs.Request
             ErrorMessage = "La referencia no puede superar los 100 caracteres."
         )]
         public string? Referencia { get; set; }
-
-
-
     }
 }

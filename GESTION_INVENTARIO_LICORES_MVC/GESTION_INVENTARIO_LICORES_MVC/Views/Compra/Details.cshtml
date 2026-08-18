@@ -1,0 +1,173 @@
+﻿@model GESTION_INVENTARIO_LICORES_MVC.DTOs.Response.CompraDetalleRespDto
+
+@{
+    ViewData["Title"] = $"Detalle de Compra #{Model.NumeroComprobante}";
+
+    var badgeClass = Model.Estado switch
+    {
+        "RECIBIDA" => "bg-success",
+        "CANCELADA" => "bg-danger",
+        "PENDIENTE" => "bg-warning text-dark",
+        _ => "bg-secondary"
+    };
+}
+
+<div class="container-fluid py-3">
+    <!-- Encabezado y Acciones -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">Compra #@Model.NumeroComprobante</h2>
+            <span class="badge @badgeClass fs-6">@Model.Estado</span>
+        </div>
+        <div class="d-flex gap-2">
+            @if (Model.Estado == "PENDIENTE")
+            {
+                <form asp-action="CambiarEstado" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.IdCompra" />
+                    <input type="hidden" name="nuevoEstado" value="RECIBIDA" />
+                    <button type="submit" class="btn btn-success" onclick="return confirm('¿Marcar compra como RECIBIDA?');">
+                        <i class="bi bi-check-circle me-1"></i> Recibida
+                    </button>
+                </form>
+
+                <form asp-action="CambiarEstado" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.IdCompra" />
+                    <input type="hidden" name="nuevoEstado" value="CANCELADA" />
+                    <button type="submit" class="btn btn-outline-danger" onclick="return confirm('¿Está seguro de CANCELAR esta compra?');">
+                        <i class="bi bi-x-circle me-1"></i> Cancelar
+                    </button>
+                </form>
+            }
+
+            <button onclick="window.print()" class="btn btn-outline-secondary">
+                <i class="bi bi-printer"></i> Imprimir
+            </button>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Volver al Listado
+            </a>
+        </div>
+    </div>
+
+    <!-- Alertas -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Cards de Cabecera -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-header bg-light fw-bold">
+                    <i class="bi bi-receipt"></i> Datos del Comprobante
+                </div>
+                <div class="card-body">
+                    <p class="mb-1"><strong>N° Comprobante:</strong> @Model.NumeroComprobante</p>
+                    <p class="mb-1"><strong>Tipo:</strong> @Model.TipoComprobante.Nombre</p>
+                    <p class="mb-1"><strong>Fecha:</strong> @Model.FechaCompra.ToString("dd/MM/yyyy HH:mm")</p>
+                    <p class="mb-0"><strong>Usuario:</strong> @Model.Usuario.Nombres @Model.Usuario.Apellidos</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-header bg-light fw-bold">
+                    <i class="bi bi-truck"></i> Proveedor
+                </div>
+                <div class="card-body">
+                    <p class="mb-1"><strong>Razón Social:</strong> @Model.Proveedor.RazonSocial</p>
+                    <p class="mb-0"><strong>RUC:</strong> @Model.Proveedor.Ruc</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-header bg-light fw-bold">
+                    <i class="bi bi-building"></i> Almacén
+                </div>
+                <div class="card-body">
+                    <p class="mb-1"><strong>Nombre:</strong> @Model.Almacen.Nombre</p>
+                    <p class="mb-0"><strong>Ubicación:</strong> @Model.Almacen.Ubicacion</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Observacion))
+    {
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body bg-light">
+                <strong class="text-muted">Observación:</strong>
+                <p class="mb-0">@Model.Observacion</p>
+            </div>
+        </div>
+    }
+
+    <!-- Tabla de Detalles -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-light fw-bold">
+            <i class="bi bi-box-seam"></i> Productos Comprados
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="ps-3">#</th>
+                            <th>Producto</th>
+                            <th class="text-center">Cantidad</th>
+                            <th class="text-end">Costo Unitario</th>
+                            <th class="text-end pe-3">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Detalles != null && Model.Detalles.Any())
+                        {
+                            int index = 1;
+                            @foreach (var item in Model.Detalles)
+                            {
+                                var subtotal = item.Cantidad * item.CostoUnitario;
+                                <tr>
+                                    <td class="ps-3 fw-bold text-muted">@index</td>
+                                    <td>
+                                        <div class="fw-bold">@item.Producto.Nombre</div>
+                                    </td>
+                                    <td class="text-center">@item.Cantidad</td>
+                                    <td class="text-end">S/ @item.CostoUnitario.ToString("N2")</td>
+                                    <td class="text-end pe-3 fw-bold">S/ @subtotal.ToString("N2")</td>
+                                </tr>
+                                index++;
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-4 text-muted">No hay items registrados.</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot class="table-light">
+                        <tr>
+                            <td colspan="4" class="text-end fw-bold fs-5">Total:</td>
+                            <td class="text-end pe-3 fw-bold fs-5 text-primary">S/ @Model.Total.ToString("N2")</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
