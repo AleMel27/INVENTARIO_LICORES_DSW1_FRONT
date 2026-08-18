@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 3,
   "targets": {
     "net8.0": {}
   },
@@ -8,23 +8,23 @@
     "net8.0": []
   },
   "packageFolders": {
-    "C:\\Users\\HP SUPPORT\\.nuget\\packages\\": {},
+    "C:\\Users\\user\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\HP SUPPORT\\Desktop\\Andre\\1Cibertec\\Desarrollo de Servicios Web 1\\Proyecto\\front\\GESTION_INVENTARIO_LICORES_MVC\\GESTION_INVENTARIO_LICORES_MVC\\GESTION_INVENTARIO_LICORES_MVC.csproj",
+      "projectUniqueName": "D:\\DSW1\\PROYECTO\\FRONTEND\\PROYECTO\\INVENTARIO_LICORES_DSW1_FRONT\\GESTION_INVENTARIO_LICORES_MVC\\GESTION_INVENTARIO_LICORES_MVC\\GESTION_INVENTARIO_LICORES_MVC.csproj",
       "projectName": "GESTION_INVENTARIO_LICORES_MVC",
-      "projectPath": "C:\\Users\\HP SUPPORT\\Desktop\\Andre\\1Cibertec\\Desarrollo de Servicios Web 1\\Proyecto\\front\\GESTION_INVENTARIO_LICORES_MVC\\GESTION_INVENTARIO_LICORES_MVC\\GESTION_INVENTARIO_LICORES_MVC.csproj",
-      "packagesPath": "C:\\Users\\HP SUPPORT\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\HP SUPPORT\\Desktop\\Andre\\1Cibertec\\Desarrollo de Servicios Web 1\\Proyecto\\front\\GESTION_INVENTARIO_LICORES_MVC\\GESTION_INVENTARIO_LICORES_MVC\\obj\\",
+      "projectPath": "D:\\DSW1\\PROYECTO\\FRONTEND\\PROYECTO\\INVENTARIO_LICORES_DSW1_FRONT\\GESTION_INVENTARIO_LICORES_MVC\\GESTION_INVENTARIO_LICORES_MVC\\GESTION_INVENTARIO_LICORES_MVC.csproj",
+      "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
+      "outputPath": "D:\\DSW1\\PROYECTO\\FRONTEND\\PROYECTO\\INVENTARIO_LICORES_DSW1_FRONT\\GESTION_INVENTARIO_LICORES_MVC\\GESTION_INVENTARIO_LICORES_MVC\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\HP SUPPORT\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -37,7 +37,6 @@
       },
       "frameworks": {
         "net8.0": {
-          "framework": "net8.0",
           "targetAlias": "net8.0",
           "projectReferences": {}
         }
@@ -52,11 +51,10 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "10.0.300"
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
       "net8.0": {
-        "framework": "net8.0",
         "targetAlias": "net8.0",
         "imports": [
           "net461",
@@ -77,7 +75,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.302/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.316/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
