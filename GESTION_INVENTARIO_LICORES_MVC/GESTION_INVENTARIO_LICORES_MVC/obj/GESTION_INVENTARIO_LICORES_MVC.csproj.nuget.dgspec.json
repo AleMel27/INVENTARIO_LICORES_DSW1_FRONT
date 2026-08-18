@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\DSW1\\PROYECTO\\FRONTEND\\PROYECTO\\INVENTARIO_LICORES_DSW1_FRONT\\GESTION_INVENTARIO_LICORES_MVC\\GESTION_INVENTARIO_LICORES_MVC\\GESTION_INVENTARIO_LICORES_MVC.csproj": {}
+    "D:\\CURSOS\\DSWI\\PROYECTO\\INVENTARIO_LICORES_DSW1_FRONT\\GESTION_INVENTARIO_LICORES_MVC\\GESTION_INVENTARIO_LICORES_MVC\\GESTION_INVENTARIO_LICORES_MVC.csproj": {}
   },
   "projects": {
-    "D:\\DSW1\\PROYECTO\\FRONTEND\\PROYECTO\\INVENTARIO_LICORES_DSW1_FRONT\\GESTION_INVENTARIO_LICORES_MVC\\GESTION_INVENTARIO_LICORES_MVC\\GESTION_INVENTARIO_LICORES_MVC.csproj": {
+    "D:\\CURSOS\\DSWI\\PROYECTO\\INVENTARIO_LICORES_DSW1_FRONT\\GESTION_INVENTARIO_LICORES_MVC\\GESTION_INVENTARIO_LICORES_MVC\\GESTION_INVENTARIO_LICORES_MVC.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\DSW1\\PROYECTO\\FRONTEND\\PROYECTO\\INVENTARIO_LICORES_DSW1_FRONT\\GESTION_INVENTARIO_LICORES_MVC\\GESTION_INVENTARIO_LICORES_MVC\\GESTION_INVENTARIO_LICORES_MVC.csproj",
+        "projectUniqueName": "D:\\CURSOS\\DSWI\\PROYECTO\\INVENTARIO_LICORES_DSW1_FRONT\\GESTION_INVENTARIO_LICORES_MVC\\GESTION_INVENTARIO_LICORES_MVC\\GESTION_INVENTARIO_LICORES_MVC.csproj",
         "projectName": "GESTION_INVENTARIO_LICORES_MVC",
-        "projectPath": "D:\\DSW1\\PROYECTO\\FRONTEND\\PROYECTO\\INVENTARIO_LICORES_DSW1_FRONT\\GESTION_INVENTARIO_LICORES_MVC\\GESTION_INVENTARIO_LICORES_MVC\\GESTION_INVENTARIO_LICORES_MVC.csproj",
-        "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-        "outputPath": "D:\\DSW1\\PROYECTO\\FRONTEND\\PROYECTO\\INVENTARIO_LICORES_DSW1_FRONT\\GESTION_INVENTARIO_LICORES_MVC\\GESTION_INVENTARIO_LICORES_MVC\\obj\\",
+        "projectPath": "D:\\CURSOS\\DSWI\\PROYECTO\\INVENTARIO_LICORES_DSW1_FRONT\\GESTION_INVENTARIO_LICORES_MVC\\GESTION_INVENTARIO_LICORES_MVC\\GESTION_INVENTARIO_LICORES_MVC.csproj",
+        "packagesPath": "C:\\Users\\Pc\\.nuget\\packages\\",
+        "outputPath": "D:\\CURSOS\\DSWI\\PROYECTO\\INVENTARIO_LICORES_DSW1_FRONT\\GESTION_INVENTARIO_LICORES_MVC\\GESTION_INVENTARIO_LICORES_MVC\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Pc\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -49,6 +49,12 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.4, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -68,7 +74,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.316/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.308/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

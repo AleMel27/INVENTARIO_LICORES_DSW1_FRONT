@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "Zb0cFzJbpo0=",
+  "dgSpecHash": "xUhE9irK6Y8=",
   "success": true,
-  "projectFilePath": "D:\\DSW1\\PROYECTO\\FRONTEND\\PROYECTO\\INVENTARIO_LICORES_DSW1_FRONT\\GESTION_INVENTARIO_LICORES_MVC\\GESTION_INVENTARIO_LICORES_MVC\\GESTION_INVENTARIO_LICORES_MVC.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "D:\\CURSOS\\DSWI\\PROYECTO\\INVENTARIO_LICORES_DSW1_FRONT\\GESTION_INVENTARIO_LICORES_MVC\\GESTION_INVENTARIO_LICORES_MVC\\GESTION_INVENTARIO_LICORES_MVC.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Pc\\.nuget\\packages\\newtonsoft.json\\13.0.4\\newtonsoft.json.13.0.4.nupkg.sha512"
+  ],
   "logs": []
 }

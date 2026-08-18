@@ -1,0 +1,24 @@
+@model CategoriaRespDto
+
+@{
+    ViewData["Title"] = "Detalle de categoria";
+}
+
+<h1>Detalle de categoria</h1>
+
+<dl class="row">
+    <dt class="col-sm-2">Id</dt>
+    <dd class="col-sm-10">@Model.IdCategoria</dd>
+
+    <dt class="col-sm-2">Nombre</dt>
+    <dd class="col-sm-10">@Model.Nombre</dd>
+
+    <dt class="col-sm-2">Descripcion</dt>
+    <dd class="col-sm-10">@Model.Descripcion</dd>
+
+    <dt class="col-sm-2">Estado</dt>
+    <dd class="col-sm-10">@(Model.Estado ? "Activo" : "Inactivo")</dd>
+</dl>
+
+<a asp-action="Edit" asp-route-id="@Model.IdCategoria" class="btn btn-warning">Edit</a>
+<a asp-action="Index" class="btn btn-secondary">Volver</a>

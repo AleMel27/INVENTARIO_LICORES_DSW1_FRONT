@@ -1,0 +1,76 @@
+@model PaginatedRespDto<CategoriaRespDto>
+
+@{
+    ViewData["Title"] = "Categorias";
+}
+
+<h1>Categorias</h1>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Crear categoria</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Nombre</th>
+            <th>Descripcion</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Items.Any())
+        {
+            foreach (CategoriaRespDto categoria in Model.Items)
+            {
+                <tr>
+                    <td>@categoria.IdCategoria</td>
+                    <td>@categoria.Nombre</td>
+                    <td>@categoria.Descripcion</td>
+                    <td>@(categoria.Estado ? "Activo" : "Inactivo")</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@categoria.IdCategoria" class="btn btn-sm btn-info">Details</a>
+                        <a asp-action="Edit" asp-route-id="@categoria.IdCategoria" class="btn btn-sm btn-warning">Edit</a>
+                        <form asp-action="ChangeStatus" asp-route-id="@categoria.IdCategoria" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-sm btn-secondary">Cambiar estado</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5">No hay categorias registradas.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="d-flex justify-content-between align-items-center">
+    <span>Pagina @Model.PageNumber de @Model.TotalPages - Total: @Model.TotalItems</span>
+    <div>
+        @if (Model.HasPreviousPage)
+        {
+            <a asp-action="Index" asp-route-pageNumber="@(Model.PageNumber - 1)" class="btn btn-outline-primary">Anterior</a>
+        }
+
+        @if (Model.HasNextPage)
+        {
+            <a asp-action="Index" asp-route-pageNumber="@(Model.PageNumber + 1)" class="btn btn-outline-primary">Siguiente</a>
+        }
+    </div>
+</div>

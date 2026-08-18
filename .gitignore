@@ -1,0 +1,18 @@
+# Visual Studio
+.vs/
+**/.vs/
+
+# Compilación .NET
+bin/
+obj/
+**/bin/
+**/obj/
+
+# Archivos de usuario de Visual Studio
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Logs
+*.log
