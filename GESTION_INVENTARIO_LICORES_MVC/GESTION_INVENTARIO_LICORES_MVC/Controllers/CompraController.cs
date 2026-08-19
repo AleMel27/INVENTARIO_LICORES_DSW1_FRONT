@@ -1,10 +1,13 @@
-﻿using System.Net.Http.Headers;
+﻿using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Web;
 using GESTION_INVENTARIO_LICORES_MVC.DTOs.Request;
 using GESTION_INVENTARIO_LICORES_MVC.DTOs.Response;
 using GESTION_INVENTARIO_LICORES_MVC.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
@@ -19,20 +22,14 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
             _httpClientFactory = httpClientFactory;
         }
 
-        private HttpClient GetClient()
-        {
-            var client = _httpClientFactory.CreateClient("UrbanEyeApi");
-            var token = HttpContext.Session.GetString("Token");
-            if (!string.IsNullOrEmpty(token))
-            {
-                client.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue("Bearer", token);
-            }
-            return client;
-        }
-
+        [HttpGet]
         public async Task<IActionResult> Index(CompraFiltroReqDto filtro)
         {
+            if (!TieneToken())
+            {
+                return await RedirigirALogin();
+            }
+
             var client = GetClient();
 
             var query = HttpUtility.ParseQueryString(string.Empty);
@@ -59,6 +56,11 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
 
             var response = await client.GetAsync($"Compra?{query}");
 
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                return await RedirigirALogin();
+            }
+
             var viewModel = new CompraIndexViewModel { Filtro = filtro };
 
             if (response.IsSuccessStatusCode)
@@ -81,10 +83,20 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(long id)
         {
+            if (!TieneToken())
+            {
+                return await RedirigirALogin();
+            }
+
             if (id <= 0) return NotFound();
 
             var client = GetClient();
             var response = await client.GetAsync($"Compra/{id}");
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                return await RedirigirALogin();
+            }
 
             if (!response.IsSuccessStatusCode)
             {
@@ -100,8 +112,14 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
             return View(compraDetalle);
         }
 
+        [HttpGet]
         public async Task<IActionResult> Create()
         {
+            if (!TieneToken())
+            {
+                return await RedirigirALogin();
+            }
+
             var client = GetClient();
             var viewModel = await ConstruirViewModelCreateAsync(client);
             return View(viewModel);
@@ -111,8 +129,13 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CompraReqDto compra)
         {
+            if (!TieneToken())
+            {
+                return await RedirigirALogin();
+            }
+
             var client = GetClient();
-            var token = HttpContext.Session.GetString("Token") ?? string.Empty;
+            var token = ObtenerToken() ?? string.Empty;
             var idUsuario = GetUsuarioIdDesdeToken(token);
 
             // El form no envía IdUsuario, así que el binder lo deja en 0 y falla su [Range].
@@ -139,6 +162,11 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
 
             var response = await client.PostAsync("Compra", content);
 
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                return await RedirigirALogin();
+            }
+
             if (response.IsSuccessStatusCode)
             {
                 TempData["Success"] = "Compra registrada correctamente.";
@@ -156,6 +184,11 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CambiarEstado(long id, string nuevoEstado)
         {
+            if (!TieneToken())
+            {
+                return await RedirigirALogin();
+            }
+
             // Validamos que el estado esté dentro de los permitidos
             var estadosValidos = new[] { "PENDIENTE", "RECIBIDA", "CANCELADA", "ANULADA" };
             if (string.IsNullOrWhiteSpace(nuevoEstado) || !estadosValidos.Contains(nuevoEstado.ToUpper()))
@@ -166,7 +199,6 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
 
             var client = GetClient();
 
-            // Formateamos el JSON en caso de que la API espere { "estado": "RECIBIDA" } o similar
             var payload = JsonSerializer.Serialize(new { estado = nuevoEstado.ToUpper() }, _jsonOptions);
 
             var request = new HttpRequestMessage(new HttpMethod("PATCH"), $"Compra/{id}/estado")
@@ -175,6 +207,11 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
             };
 
             var response = await client.SendAsync(request);
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                return await RedirigirALogin();
+            }
 
             if (response.IsSuccessStatusCode)
             {
@@ -189,10 +226,57 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        #region Helpers Privados
+        #region Métodos de Apoyo y Configuración del Token
 
-        // Decodifica el "sub" (idUsuario) del JWT guardado en sesión, sin validar firma
-        // (la validación real ya la hace la API al recibir el Bearer token).
+        private string? ObtenerToken()
+        {
+            // 1. Intentar obtener de la Sesión
+            string? token = HttpContext.Session.GetString("Token");
+
+            // 2. Si la sesión expiró/está vacía, rescatarlo del Claim de la Cookie
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                token = User.FindFirst("JWToken")?.Value;
+
+                // Reponer en sesión
+                if (!string.IsNullOrWhiteSpace(token))
+                {
+                    HttpContext.Session.SetString("Token", token);
+                }
+            }
+
+            return token;
+        }
+
+        private bool TieneToken()
+        {
+            return !string.IsNullOrWhiteSpace(ObtenerToken());
+        }
+
+        private HttpClient GetClient()
+        {
+            var client = _httpClientFactory.CreateClient("UrbanEyeApi");
+            var token = ObtenerToken();
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            return client;
+        }
+
+        private async Task<IActionResult> RedirigirALogin()
+        {
+            HttpContext.Session.Clear();
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            TempData["Error"] = "Su sesión ha expirado o no está autorizado. Inicie sesión nuevamente.";
+            return RedirectToAction("Login", "Auth");
+        }
+
+        // Decodifica el "sub" (idUsuario) del JWT, sin validar firma
         private static long? GetUsuarioIdDesdeToken(string token)
         {
             try
@@ -280,7 +364,6 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
             var paged = JsonSerializer.Deserialize<PagedResultRespDto<AlmacenInventarioRespDto>>(json, _jsonOptions);
             return paged?.Items ?? [];
         }
-
         #endregion
     }
 }

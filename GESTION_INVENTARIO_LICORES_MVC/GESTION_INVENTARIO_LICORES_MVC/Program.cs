@@ -1,17 +1,36 @@
-using GESTION_INVENTARIO_LICORES_MVC.Services; // Asegúrate de incluir el namespace de tus servicios
+using GESTION_INVENTARIO_LICORES_MVC.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// 1. Agregar servicios MVC (Controladores con Vistas)
 builder.Services.AddControllersWithViews();
 
-// Registra la API base e inyecta la interfaz IAuthApiService asociada a su implementación
-builder.Services.AddHttpClient<IAuthApiService, AuthApiService>("UrbanEyeApi", client =>
+// 2. Registración de HttpClients:
+// A) Cliente nombrado "UrbanEyeApi" para controladores como CategoriaController que usan IHttpClientFactory
+builder.Services.AddHttpClient("UrbanEyeApi", client =>
 {
     client.BaseAddress = new Uri("https://api.urbaneyepe.site/api/");
 });
 
-// Configuración de Caché y Sesión
+// B) Cliente tipado para AuthApiService usado por AuthController
+builder.Services.AddHttpClient<IAuthApiService, AuthApiService>(client =>
+{
+    client.BaseAddress = new Uri("https://api.urbaneyepe.site/api/");
+});
+
+// 3. Configurar Autenticación basada en Cookies
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Auth/Login";
+        options.LogoutPath = "/Auth/Logout";
+        options.AccessDeniedPath = "/Home/Error";
+        options.ExpireTimeSpan = TimeSpan.FromHours(8);
+        options.SlidingExpiration = true;
+    });
+
+// 4. Configurar Caché y Sesión (Aquí se guardará el token de forma dinámica)
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -34,26 +53,14 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// 5. Middlewares de Sesión y Seguridad (En el orden estricto requerido)
 app.UseSession();
-
-// Middleware de prueba para inyectar token por defecto
-app.Use(async (context, next) =>
-{
-    if (string.IsNullOrEmpty(context.Session.GetString("Token")))
-    {
-        context.Session.SetString(
-            "Token",
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwiZW1haWwiOiJhZG1pbkBjZW8ubGljb3Jlcy5wZSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFETUlOIiwianRpIjoiMjM1OWVmODktZTJjMC00YTFmLWJiNDctYjJkZjNkMGMwYjc4IiwibmJmIjoxNzg3MDcxMzIzLCJleHAiOjE3ODcwNzQ5MjMsImlzcyI6IkdFU1RJT05fSU5WRU5UQVJJT19MSUNPUkVTX0FQSSIsImF1ZCI6IkdFU1RJT05fSU5WRU5UQVJJT19MSUNPUkVTX0NMSUVOVCJ9.NQBLplf2ETtBX4qykXXENmy39Y_E7oTWni0cULCruVE"
-        );
-    }
-
-    await next();
-});
-
+app.UseAuthentication();
 app.UseAuthorization();
 
+// 6. Ruta predeterminada hacia la pantalla de Login
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Auth}/{action=Login}/{id?}");
 
 app.Run();

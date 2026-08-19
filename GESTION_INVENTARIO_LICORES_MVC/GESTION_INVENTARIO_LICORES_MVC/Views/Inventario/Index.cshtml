@@ -211,7 +211,24 @@
                             <option value="">-- Seleccione Tipo --</option>
                             @foreach (var tm in Model.TiposMovimiento)
                             {
-                                <option value="@tm.IdTipoMovimiento">@tm.Nombre</option>
+                                var nombreUpper = tm.Nombre?.ToUpper() ?? "";
+
+                                // Filtrar solo los movimientos que sean de AJUSTE
+                                if (nombreUpper.Contains("AJUSTE"))
+                                {
+                                    string nombreMostrar = tm.Nombre;
+
+                                    if (nombreUpper.Contains("ENTRADA"))
+                                    {
+                                        nombreMostrar = "Entrada por Ajuste (+)";
+                                    }
+                                    else if (nombreUpper.Contains("SALIDA"))
+                                    {
+                                        nombreMostrar = "Salida por Ajuste (-)";
+                                    }
+
+                                    <option value="@tm.IdTipoMovimiento">@nombreMostrar</option>
+                                }
                             }
                         </select>
                     </div>
@@ -223,7 +240,7 @@
 
                     <div class="mb-3">
                         <label class="form-label fw-bold">Motivo</label>
-                        <textarea name="Motivo" class="form-control" rows="2" maxlength="255" required placeholder="Ej: Merma por rotura, Corrección de conteo fisíco..."></textarea>
+                        <textarea name="Motivo" class="form-control" rows="2" maxlength="255" required placeholder="Ej: Merma por rotura, Corrección de conteo físico..."></textarea>
                     </div>
 
                     <div class="mb-3">
@@ -242,20 +259,20 @@
 
 @section Scripts {
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             var modalAjuste = document.getElementById('modalAjuste');
-            modalAjuste.addEventListener('show.bs.modal', function (event) {
+            modalAjuste.addEventListener('show.bs.modal', function(event) {
                 var button = event.relatedTarget;
                 var id = button.getAttribute('data-id');
                 var producto = button.getAttribute('data-producto');
                 var almacen = button.getAttribute('data-almacen');
-                        var stock = button.getAttribute('data-stock');
+                var stock = button.getAttribute('data-stock');
 
                 document.getElementById('idInventarioAjuste').value = id;
                 document.getElementById('lblProducto').textContent = producto;
                 document.getElementById('lblAlmacen').textContent = almacen;
-                    document.getElementById('lblStock').textContent = stock + ' unidades';
-                    });
-                });
+                document.getElementById('lblStock').textContent = stock + ' unidades';
+            });
+        });
     </script>
 }

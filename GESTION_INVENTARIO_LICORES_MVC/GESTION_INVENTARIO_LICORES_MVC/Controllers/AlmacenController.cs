@@ -1,5 +1,7 @@
 ﻿using GESTION_INVENTARIO_LICORES_MVC.DTOs.Request;
 using GESTION_INVENTARIO_LICORES_MVC.DTOs.Response;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -27,12 +29,12 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
             string orden = "DESC"
         )
         {
-            HttpClient client = CrearCliente();
-
             if (!TieneToken())
             {
-                return RedirigirALogin();
+                return await RedirigirALogin();
             }
+
+            HttpClient client = CrearCliente();
 
             pageNumber = pageNumber < 1 ? 1 : pageNumber;
 
@@ -69,13 +71,13 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
             HttpResponseMessage response = await client.GetAsync($"Almacen?{queryString}");
             string content = await response.Content.ReadAsStringAsync();
 
-            PaginatedRespDto<AlmacenRespDto>? respuesta =
-                DeserializarContenido<PaginatedRespDto<AlmacenRespDto>>(content);
-
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
-                return RedirigirALogin();
+                return await RedirigirALogin();
             }
+
+            PaginatedRespDto<AlmacenRespDto>? respuesta =
+                DeserializarContenido<PaginatedRespDto<AlmacenRespDto>>(content);
 
             if (!response.IsSuccessStatusCode || respuesta == null)
             {
@@ -99,19 +101,19 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(long id)
         {
-            HttpClient client = CrearCliente();
-
             if (!TieneToken())
             {
-                return RedirigirALogin();
+                return await RedirigirALogin();
             }
+
+            HttpClient client = CrearCliente();
 
             HttpResponseMessage response = await client.GetAsync($"Almacen/{id}");
             string content = await response.Content.ReadAsStringAsync();
 
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
-                return RedirigirALogin();
+                return await RedirigirALogin();
             }
 
             if (response.StatusCode == HttpStatusCode.NotFound)
@@ -142,11 +144,11 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             if (!TieneToken())
             {
-                return RedirigirALogin();
+                return await RedirigirALogin();
             }
 
             return View();
@@ -158,7 +160,7 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
         {
             if (!TieneToken())
             {
-                return RedirigirALogin();
+                return await RedirigirALogin();
             }
 
             if (!ModelState.IsValid)
@@ -175,7 +177,7 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
 
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
-                return RedirigirALogin();
+                return await RedirigirALogin();
             }
 
             if (!response.IsSuccessStatusCode)
@@ -195,19 +197,19 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(long id)
         {
-            HttpClient client = CrearCliente();
-
             if (!TieneToken())
             {
-                return RedirigirALogin();
+                return await RedirigirALogin();
             }
+
+            HttpClient client = CrearCliente();
 
             HttpResponseMessage response = await client.GetAsync($"Almacen/{id}");
             string content = await response.Content.ReadAsStringAsync();
 
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
-                return RedirigirALogin();
+                return await RedirigirALogin();
             }
 
             if (response.StatusCode == HttpStatusCode.NotFound)
@@ -250,7 +252,7 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
         {
             if (!TieneToken())
             {
-                return RedirigirALogin();
+                return await RedirigirALogin();
             }
 
             if (!ModelState.IsValid)
@@ -268,7 +270,7 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
 
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
-                return RedirigirALogin();
+                return await RedirigirALogin();
             }
 
             if (response.StatusCode == HttpStatusCode.NotFound)
@@ -296,12 +298,12 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangeStatus(long id, bool? estadoActual)
         {
-            HttpClient client = CrearCliente();
-
             if (!TieneToken())
             {
-                return RedirigirALogin();
+                return await RedirigirALogin();
             }
+
+            HttpClient client = CrearCliente();
 
             bool nuevoEstado = true;
             if (estadoActual.HasValue)
@@ -334,7 +336,7 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
 
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
-                return RedirigirALogin();
+                return await RedirigirALogin();
             }
 
             if (!response.IsSuccessStatusCode)
@@ -355,10 +357,34 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        #region Métodos de Apoyo y Configuración del Token
+
+        private string? ObtenerToken()
+        {
+            string? token = HttpContext.Session.GetString("Token");
+
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                token = User.FindFirst("JWToken")?.Value;
+
+                if (!string.IsNullOrWhiteSpace(token))
+                {
+                    HttpContext.Session.SetString("Token", token);
+                }
+            }
+
+            return token;
+        }
+
+        private bool TieneToken()
+        {
+            return !string.IsNullOrWhiteSpace(ObtenerToken());
+        }
+
         private HttpClient CrearCliente()
         {
             HttpClient client = _httpClientFactory.CreateClient("UrbanEyeApi");
-            string? token = HttpContext.Session.GetString("Token");
+            string? token = ObtenerToken();
 
             if (!string.IsNullOrWhiteSpace(token))
             {
@@ -369,16 +395,14 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
             return client;
         }
 
-        private bool TieneToken()
+        private async Task<IActionResult> RedirigirALogin()
         {
-            string? token = HttpContext.Session.GetString("Token");
-            return !string.IsNullOrWhiteSpace(token);
-        }
+            // Limpiar la sesión y desautenticar la Cookie para evitar rebotes hacia Home/Index
+            HttpContext.Session.Clear();
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-        private IActionResult RedirigirALogin()
-        {
-            TempData["Error"] = "Debe iniciar sesión para continuar.";
-            return RedirectToAction("Index", "Home");
+            TempData["Error"] = "Su sesión ha expirado o no está autorizado. Inicie sesión nuevamente.";
+            return RedirectToAction("Login", "Auth");
         }
 
         private static T? DeserializarContenido<T>(string content)
@@ -452,5 +476,6 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
                 _ => mensajePorDefecto
             };
         }
+        #endregion
     }
 }
