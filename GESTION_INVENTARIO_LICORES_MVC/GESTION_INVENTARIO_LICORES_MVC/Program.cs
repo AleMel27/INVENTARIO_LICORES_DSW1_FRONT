@@ -7,13 +7,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 // 2. Registración de HttpClients:
-// A) Cliente nombrado "UrbanEyeApi" para controladores como CategoriaController que usan IHttpClientFactory
+// A) Cliente nombrado "UrbanEyeApi"
 builder.Services.AddHttpClient("UrbanEyeApi", client =>
 {
     client.BaseAddress = new Uri("https://api.urbaneyepe.site/api/");
 });
 
-// B) Cliente tipado para AuthApiService usado por AuthController
+// B) Cliente tipado para AuthApiService
 builder.Services.AddHttpClient<IAuthApiService, AuthApiService>(client =>
 {
     client.BaseAddress = new Uri("https://api.urbaneyepe.site/api/");
@@ -25,12 +25,12 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     {
         options.LoginPath = "/Auth/Login";
         options.LogoutPath = "/Auth/Logout";
-        options.AccessDeniedPath = "/Home/Error";
+        options.AccessDeniedPath = "/Auth/Login";
         options.ExpireTimeSpan = TimeSpan.FromHours(8);
         options.SlidingExpiration = true;
     });
 
-// 4. Configurar Caché y Sesión (Aquí se guardará el token de forma dinámica)
+// 4. Configurar Caché y Sesión
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -44,16 +44,15 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+    app.UseExceptionHandler("/Auth/Login");
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
 
-// 5. Middlewares de Sesión y Seguridad (En el orden estricto requerido)
+// 5. Middlewares de Sesión y Seguridad
 app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();

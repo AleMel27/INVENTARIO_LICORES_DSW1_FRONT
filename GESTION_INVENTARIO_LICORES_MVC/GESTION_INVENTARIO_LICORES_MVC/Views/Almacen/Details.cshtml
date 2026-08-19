@@ -4,39 +4,54 @@
     ViewData["Title"] = "Detalles del Almacén";
 }
 
-<div class="container mt-4">
+<div class="container-fluid py-3">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
-            <div class="card shadow">
-                <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0"><i class="bi bi-info-circle me-2"></i>Detalles del Almacén</h4>
-                    <span class="badge @(Model.Estado ? "bg-success" : "bg-secondary") fs-6">
-                        @(Model.Estado ? "Activo" : "Inactivo")
-                    </span>
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-header bg-white border-bottom py-3 px-4 d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold text-dark mb-0">
+                        <i class="bi bi-info-circle text-primary me-2"></i>Detalles del Almacén
+                    </h5>
+                    @if (Model.Estado)
+                    {
+                        <span class="badge bg-success-subtle text-success px-2 py-1">Activo</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary-subtle text-secondary px-2 py-1">Inactivo</span>
+                    }
                 </div>
-                <div class="card-body">
-                    <dl class="row mb-0">
-                        <dt class="col-sm-4 text-muted">ID Almacén:</dt>
-                        <dd class="col-sm-8 fw-bold">#@Model.IdAlmacen</dd>
+                <div class="card-body p-4">
+                    <div class="p-3 bg-light rounded-3 border mb-3">
+                        <div class="row g-3">
+                            <div class="col-sm-4">
+                                <span class="text-muted text-uppercase fw-semibold small d-block">ID Almacén</span>
+                                <span class="badge bg-white text-secondary border font-monospace">#@Model.IdAlmacen</span>
+                            </div>
+                            <div class="col-sm-8">
+                                <span class="text-muted text-uppercase fw-semibold small d-block">Nombre</span>
+                                <span class="fw-bold text-dark">@Model.Nombre</span>
+                            </div>
+                            <div class="col-12">
+                                <span class="text-muted text-uppercase fw-semibold small d-block">Ubicación</span>
+                                <span class="text-secondary"><i class="bi bi-geo-alt me-1 text-muted"></i>@Model.Ubicacion</span>
+                            </div>
+                        </div>
+                    </div>
 
-                        <dt class="col-sm-4 text-muted">Nombre:</dt>
-                        <dd class="col-sm-8">@Model.Nombre</dd>
-
-                        <dt class="col-sm-4 text-muted">Ubicación:</dt>
-                        <dd class="col-sm-8">@Model.Ubicacion</dd>
-
-                        <dt class="col-sm-4 text-muted">Descripción:</dt>
-                        <dd class="col-sm-8">
-                            @(string.IsNullOrWhiteSpace(Model.Descripcion) ? "-" : Model.Descripcion)
-                        </dd>
-                    </dl>
+                    <div class="px-1">
+                        <span class="text-muted text-uppercase fw-semibold small d-block mb-1">Descripción</span>
+                        <p class="text-secondary mb-0">
+                            @(string.IsNullOrWhiteSpace(Model.Descripcion) ? "Sin descripción asignada." : Model.Descripcion)
+                        </p>
+                    </div>
                 </div>
-                <div class="card-footer bg-light d-flex justify-content-between">
-                    <a asp-action="Index" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-left me-1"></i> Volver a la Lista
+                <div class="card-footer bg-light border-top py-2 px-4 d-flex justify-content-between align-items-center">
+                    <a asp-action="Index" class="btn btn-sm btn-light border text-secondary fw-medium px-3">
+                        <i class="bi bi-arrow-left me-1"></i> Volver
                     </a>
-                    <a asp-action="Edit" asp-route-id="@Model.IdAlmacen" class="btn btn-warning">
-                        <i class="bi bi-pencil-square me-1"></i> Editar
+                    <a asp-action="Edit" asp-route-id="@Model.IdAlmacen" class="btn btn-sm btn-warning fw-medium px-3">
+                        <i class="bi bi-pencil-square me-1"></i> Editar Almacén
                     </a>
                 </div>
             </div>

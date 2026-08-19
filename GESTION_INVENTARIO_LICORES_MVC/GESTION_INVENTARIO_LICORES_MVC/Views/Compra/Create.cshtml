@@ -5,201 +5,270 @@
     var c = Model.Compra;
 }
 
-<h2>Nueva Compra</h2>
+<div class="container-fluid py-3">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
 
-<div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm rounded-3 mb-3" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>@TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
 
-<form asp-action="Create" method="post" id="formCompra">
-    @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger border-0 shadow-sm rounded-3 mb-3"></div>
 
-    <div class="row g-3 mb-4">
-        <div class="col-md-3">
-            <label class="form-label">Proveedor</label>
-            <select name="IdProveedor" class="form-select" required>
-                <option value="">Seleccione...</option>
-                @foreach (var p in Model.Proveedores)
-                {
-                    <option value="@p.IdProveedor" selected="@(c.IdProveedor == p.IdProveedor)">
-                        @p.RazonSocial (@p.Ruc)
-                    </option>
-                }
-            </select>
-        </div>
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-header bg-white border-bottom py-3 px-4">
+                    <h5 class="fw-bold text-dark mb-0">
+                        <i class="bi bi-cart-plus text-primary me-2"></i>Registrar Nueva Compra
+                    </h5>
+                </div>
+                <form asp-action="Create" method="post" id="formCompra">
+                    @Html.AntiForgeryToken()
+                    <div class="card-body p-4">
 
-        <div class="col-md-2">
-            <label class="form-label">Tipo Comprobante</label>
-            <select name="IdTipoComprobante" class="form-select" required>
-                <option value="">Seleccione...</option>
-                @foreach (var t in Model.TiposComprobante)
-                {
-                    <option value="@t.IdTipoComprobante" selected="@(c.IdTipoComprobante == t.IdTipoComprobante)">
-                        @t.Nombre
-                    </option>
-                }
-            </select>
-        </div>
+                        <!-- Cabecera de la Compra -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold text-secondary">Proveedor <span class="text-danger">*</span></label>
+                                <select name="IdProveedor" class="form-select form-select-sm" required>
+                                    <option value="">Seleccione proveedor...</option>
+                                    @foreach (var p in Model.Proveedores)
+                                    {
+                                        <option value="@p.IdProveedor" selected="@(c.IdProveedor == p.IdProveedor)">
+                                            @p.RazonSocial (@p.Ruc)
+                                        </option>
+                                    }
+                                </select>
+                            </div>
 
-        <div class="col-md-3">
-            <label class="form-label">Almacén</label>
-            <select name="IdAlmacen" class="form-select" required>
-                <option value="">Seleccione...</option>
-                @foreach (var a in Model.Almacenes)
-                {
-                    <option value="@a.IdAlmacen" selected="@(c.IdAlmacen == a.IdAlmacen)">
-                        @a.Nombre
-                    </option>
-                }
-            </select>
-        </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-semibold text-secondary">Tipo Comprobante <span class="text-danger">*</span></label>
+                                <select name="IdTipoComprobante" id="selectTipoComprobante" class="form-select form-select-sm" required>
+                                    <option value="">Seleccione tipo...</option>
+                                    @foreach (var t in Model.TiposComprobante)
+                                    {
+                                        <option value="@t.IdTipoComprobante" selected="@(c.IdTipoComprobante == t.IdTipoComprobante)">
+                                            @t.Nombre
+                                        </option>
+                                    }
+                                </select>
+                            </div>
 
-        <div class="col-md-4">
-            <label class="form-label">N° Comprobante</label>
-            <input type="text" name="NumeroComprobante" class="form-control" value="@c.NumeroComprobante" maxlength="50" required />
-        </div>
+                            <div class="col-md-2">
+                                <label class="form-label small fw-semibold text-secondary">Almacén <span class="text-danger">*</span></label>
+                                <select name="IdAlmacen" class="form-select form-select-sm" required>
+                                    <option value="">Seleccione almacén...</option>
+                                    @foreach (var a in Model.Almacenes)
+                                    {
+                                        <option value="@a.IdAlmacen" selected="@(c.IdAlmacen == a.IdAlmacen)">
+                                            @a.Nombre
+                                        </option>
+                                    }
+                                </select>
+                            </div>
 
-        <div class="col-12">
-            <label class="form-label">Observación</label>
-            <textarea name="Observacion" class="form-control" maxlength="500" rows="2">@c.Observacion</textarea>
+                            <!-- N° COMPROBANTE AUTOGENERADO -->
+                            <div class="col-md-3">
+                                <label class="form-label small fw-semibold text-secondary">N° Comprobante <span class="text-danger">*</span></label>
+                                <div class="input-group input-group-sm">
+                                    <input type="text" name="NumeroComprobante" id="txtNumeroComprobante" class="form-control font-monospace bg-light" value="@c.NumeroComprobante" placeholder="Autogenerado..." readonly tabindex="-1" required autocomplete="off" />
+                                    <button class="btn btn-outline-secondary" type="button" id="btnRegenerarComprobante" title="Regenerar correlativo">
+                                        <i class="bi bi-arrow-clockwise"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label small fw-semibold text-secondary">Observación</label>
+                                <textarea name="Observacion" class="form-control form-control-sm" rows="2" placeholder="Notas adicionales sobre la compra..." maxlength="500" style="resize: none;">@c.Observacion</textarea>
+                            </div>
+                        </div>
+
+                        <hr class="text-muted opacity-25 my-4" />
+
+                        <!-- Tabla Dinámica de Detalles -->
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="fw-bold text-dark mb-0">
+                                <i class="bi bi-box-seam me-1 text-primary"></i>Detalles de la Compra
+                            </h6>
+                            <button type="button" id="btnAgregarDetalle" class="btn btn-sm btn-light border text-primary fw-medium">
+                                <i class="bi bi-plus-lg me-1"></i> Agregar Producto
+                            </button>
+                        </div>
+
+                        <div class="table-responsive rounded-3 border mb-3">
+                            <table class="table table-hover align-middle mb-0" id="tablaDetalles">
+                                <thead class="bg-light border-bottom text-secondary small text-uppercase fw-semibold">
+                                    <tr>
+                                        <th style="width: 40%;" class="ps-3 py-2">Producto</th>
+                                        <th style="width: 15%;" class="py-2">Cantidad</th>
+                                        <th style="width: 20%;" class="py-2">Costo Unit. (S/)</th>
+                                        <th style="width: 20%;" class="py-2">Subtotal (S/)</th>
+                                        <th style="width: 5%;" class="text-center py-2 pe-3"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="detallesBody" class="border-top-0">
+                                    <!-- Filas agregadas dinámicamente por JS -->
+                                </tbody>
+                                <tfoot class="bg-light border-top fw-bold">
+                                    <tr>
+                                        <td colspan="3" class="text-end py-2 text-secondary">Total Compra:</td>
+                                        <td id="totalCompra" class="py-2 text-primary fs-6">S/ 0.00</td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                        <div id="errorDetalles" class="alert alert-warning border-0 shadow-sm rounded-3 py-2 px-3 small d-none">
+                            <i class="bi bi-exclamation-triangle me-1"></i> Debe agregar al menos un producto a la compra.
+                        </div>
+
+                    </div>
+                    <div class="card-footer bg-light border-top py-2 px-4 d-flex justify-content-between align-items-center">
+                        <a asp-action="Index" class="btn btn-sm btn-light border text-secondary fw-medium px-3">
+                            <i class="bi bi-arrow-left me-1"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-sm btn-primary fw-medium px-3">
+                            <i class="bi bi-check-lg me-1"></i> Guardar Compra
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-
-    <h5>Detalles de la compra</h5>
-
-    <table class="table" id="tablaDetalles">
-        <thead>
-            <tr>
-                <th style="width:35%">Producto</th>
-                <th style="width:15%">Cantidad</th>
-                <th style="width:20%">Costo Unitario (S/)</th>
-                <th style="width:20%">Subtotal (S/)</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody id="detallesBody">
-            <!-- filas agregadas por JS -->
-        </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="3" class="text-end fw-bold">Total:</td>
-                <td id="totalCompra" class="fw-bold">S/ 0.00</td>
-                <td></td>
-            </tr>
-        </tfoot>
-    </table>
-
-    <button type="button" id="btnAgregarDetalle" class="btn btn-outline-primary mb-3">
-        <i class="bi bi-plus-lg"></i> Agregar producto
-    </button>
-
-    <div id="errorDetalles" class="alert alert-warning d-none">
-        Debe agregar al menos un producto a la compra.
-    </div>
-
-    <div class="d-flex gap-2">
-        <button type="submit" class="btn btn-success">Guardar Compra</button>
-        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-    </div>
-</form>
+</div>
 
 @section Scripts {
     <script>
+        // --- AUTOGENERACIÓN DE N° COMPROBANTE ---
+        const selectTipoComp = document.getElementById('selectTipoComprobante');
+        const txtNumComp = document.getElementById('txtNumeroComprobante');
+        const btnRegenerarComp = document.getElementById('btnRegenerarComprobante');
+
+        function generarNumeroComprobante() {
+            const tipoText = selectTipoComp.options[selectTipoComp.selectedIndex]?.text.toLowerCase() || '';
+            
+            let prefijo = 'C001'; // Default
+            if (tipoText.includes('factura')) {
+                prefijo = 'F001';
+            } else if (tipoText.includes('boleta')) {
+                prefijo = 'B001';
+            }
+
+            // Generar correlativo aleatorio de 4 dígitos para simulado (ej: F001-0842)
+            const correlativo = String(Math.floor(Math.random() * 9000) + 1000);
+            txtNumComp.value = `${prefijo}-${correlativo}`;
+        }
+
+        if (selectTipoComp) selectTipoComp.addEventListener('change', generarNumeroComprobante);
+        if (btnRegenerarComp) btnRegenerarComp.addEventListener('click', generarNumeroComprobante);
+
+        // Si el campo está vacío al cargar la vista, autogenerar uno
+        if (!txtNumComp.value) {
+            generarNumeroComprobante();
+        }
+
+        // --- LÓGICA DE DETALLES Y TABLA DINÁMICA ---
         const productos = @Html.Raw(Json.Serialize(Model.Productos));
-          let detalleIndex = 0;
         const tbody = document.getElementById('detallesBody');
 
-           function crearOpcionesProducto(seleccionadoId) {
-               let opciones = '<option value="">Seleccione...</option>';
-              productos.forEach(p => {
-                   const sel = String(p.idProducto) === String(seleccionadoId) ? 'selected' : '';
-                   opciones += `<option value="${p.idProducto}" ${sel}>${p.codigo} - ${p.nombre}</option>`;
-               });
-               return opciones;
-          }
+        function crearOpcionesProducto(seleccionadoId) {
+            let opciones = '<option value="">Seleccione producto...</option>';
+            productos.forEach(p => {
+                const sel = String(p.idProducto) === String(seleccionadoId) ? 'selected' : '';
+                opciones += `<option value="${p.idProducto}" ${sel}>${p.codigo} - ${p.nombre}</option>`;
+            });
+            return opciones;
+        }
 
-              function agregarDetalle() {
-                  const fila = document.createElement('tr');
-               fila.innerHTML = `
-                  <td>
-                       <select class="form-select select-producto" required>
-                          ${crearOpcionesProducto(null)}
-                       </select>
-                   </td>
-                   <td>
-                      <input type="number" class="form-control input-cantidad" min="1" step="1" value="1" required />
-                   </td>
-                  <td>
-                      <input type="number" class="form-control input-costo" min="0" step="0.01" value="0.00" required />
-                  </td>
-                  <td class="subtotal-fila">S/ 0.00</td>
-                  <td>
-                      <button type="button" class="btn btn-sm btn-danger btn-quitar">
-                          <i class="bi bi-trash"></i>
-                      </button>
-                  </td>
-              `;
-              tbody.appendChild(fila);
+        function agregarDetalle() {
+            const fila = document.createElement('tr');
+            fila.innerHTML = `
+                <td class="ps-3 py-2">
+                    <select class="form-select form-select-sm select-producto" required>
+                        ${crearOpcionesProducto(null)}
+                    </select>
+                </td>
+                <td class="py-2">
+                    <input type="number" class="form-control form-control-sm input-cantidad" min="1" step="1" value="1" required />
+                </td>
+                <td class="py-2">
+                    <input type="number" class="form-control form-control-sm input-costo" min="0" step="0.01" value="0.00" required />
+                </td>
+                <td class="py-2 fw-medium text-dark subtotal-fila">S/ 0.00</td>
+                <td class="text-center py-2 pe-3">
+                    <button type="button" class="btn btn-sm btn-light border text-danger btn-quitar" title="Eliminar fila">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(fila);
 
-              fila.querySelector('.btn-quitar').addEventListener('click', () => {
-                  fila.remove();
-                  reindexarYCalcular();
-              });
-              fila.querySelector('.input-cantidad').addEventListener('input', reindexarYCalcular);
-              fila.querySelector('.input-costo').addEventListener('input', reindexarYCalcular);
+            fila.querySelector('.btn-quitar').addEventListener('click', () => {
+                fila.remove();
+                reindexarYCalcular();
+            });
+            fila.querySelector('.input-cantidad').addEventListener('input', reindexarYCalcular);
+            fila.querySelector('.input-costo').addEventListener('input', reindexarYCalcular);
 
-              reindexarYCalcular();
-          }
+            reindexarYCalcular();
+        }
 
-           function reindexarYCalcular() {
-               const filas = tbody.querySelectorAll('tr');
-              let total = 0;
+        function reindexarYCalcular() {
+            const filas = tbody.querySelectorAll('tr');
+            let total = 0;
 
-               filas.forEach((fila, i) => {
-                   const selectProd = fila.querySelector('.select-producto');
-                   const inputCant = fila.querySelector('.input-cantidad');
-                  const inputCosto = fila.querySelector('.input-costo');
-                   const celdaSubtotal = fila.querySelector('.subtotal-fila');
+            filas.forEach((fila, i) => {
+                const selectProd = fila.querySelector('.select-producto');
+                const inputCant = fila.querySelector('.input-cantidad');
+                const inputCosto = fila.querySelector('.input-costo');
+                const celdaSubtotal = fila.querySelector('.subtotal-fila');
 
-                  selectProd.name = `Detalles[${i}].IdProducto`;
+                selectProd.name = `Detalles[${i}].IdProducto`;
                 inputCant.name = `Detalles[${i}].Cantidad`;
-                   inputCosto.name = `Detalles[${i}].CostoUnitario`;
+                inputCosto.name = `Detalles[${i}].CostoUnitario`;
 
-                      const cantidad = parseFloat(inputCant.value) || 0;
-                      const costo = parseFloat(inputCosto.value) || 0;
-                   const subtotal = cantidad * costo;
+                const cantidad = parseFloat(inputCant.value) || 0;
+                const costo = parseFloat(inputCosto.value) || 0;
+                const subtotal = cantidad * costo;
 
-                  celdaSubtotal.textContent = 'S/ ' + subtotal.toFixed(2);
+                celdaSubtotal.textContent = 'S/ ' + subtotal.toFixed(2);
                 total += subtotal;
-               });
+            });
 
-                  document.getElementById('totalCompra').textContent = 'S/ ' + total.toFixed(2);
-           }
+            document.getElementById('totalCompra').textContent = 'S/ ' + total.toFixed(2);
+        }
 
         document.getElementById('btnAgregarDetalle').addEventListener('click', agregarDetalle);
 
-          document.getElementById('formCompra').addEventListener('submit', function (e) {
-              const filas = tbody.querySelectorAll('tr');
-              const errorDiv = document.getElementById('errorDetalles');
-              if (filas.length === 0) {
-                  e.preventDefault();
-                  errorDiv.classList.remove('d-none');
-                  return;
-              }
-              errorDiv.classList.add('d-none');
-              reindexarYCalcular();
-          });
+        document.getElementById('formCompra').addEventListener('submit', function(e) {
+            const filas = tbody.querySelectorAll('tr');
+            const errorDiv = document.getElementById('errorDetalles');
+            if (filas.length === 0) {
+                e.preventDefault();
+                errorDiv.classList.remove('d-none');
+                return;
+            }
+            errorDiv.classList.add('d-none');
+            reindexarYCalcular();
+        });
 
-          const detallesExistentes = @Html.Raw(Json.Serialize(c.Detalles));
-          if (detallesExistentes && detallesExistentes.length > 0) {
-              detallesExistentes.forEach(d => {
-                  agregarDetalle();
-                  const filaActual = tbody.lastElementChild;
-                  filaActual.querySelector('.select-producto').innerHTML = crearOpcionesProducto(d.idProducto);
-                  filaActual.querySelector('.input-cantidad').value = d.cantidad;
-                  filaActual.querySelector('.input-costo').value = d.costoUnitario;
-              });
-              reindexarYCalcular();
-          } else {
-              agregarDetalle();
-          }
+        const detallesExistentes = @Html.Raw(Json.Serialize(c.Detalles));
+        if (detallesExistentes && detallesExistentes.length > 0) {
+            detallesExistentes.forEach(d => {
+                agregarDetalle();
+                const filaActual = tbody.lastElementChild;
+                filaActual.querySelector('.select-producto').innerHTML = crearOpcionesProducto(d.idProducto);
+                filaActual.querySelector('.input-cantidad').value = d.cantidad;
+                filaActual.querySelector('.input-costo').value = d.costoUnitario;
+            });
+            reindexarYCalcular();
+        } else {
+            agregarDetalle();
+        }
     </script>
 }

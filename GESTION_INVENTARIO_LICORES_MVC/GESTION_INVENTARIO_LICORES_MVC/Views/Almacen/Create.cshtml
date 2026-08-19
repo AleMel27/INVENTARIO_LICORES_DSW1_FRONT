@@ -3,55 +3,54 @@
 @{
     ViewData["Title"] = "Crear Almacén";
 }
-
-<div class="container mt-4">
+<div class="container-fluid py-3">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
 
             @if (TempData["Error"] != null)
             {
-                <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+                <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm rounded-3 mb-3" role="alert">
                     <i class="bi bi-exclamation-triangle-fill me-2"></i>@TempData["Error"]
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             }
 
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0"><i class="bi bi-building-add me-2"></i>Registrar Nuevo Almacén</h4>
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-header bg-white border-bottom py-3 px-4">
+                    <h5 class="fw-bold text-dark mb-0">
+                        <i class="bi bi-building-add text-primary me-2"></i>Registrar Nuevo Almacén
+                    </h5>
                 </div>
-                <div class="card-body">
-                    <form asp-action="Create" method="post">
-                        @Html.AntiForgeryToken()
-
+                <form asp-action="Create" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="card-body p-4">
                         <div class="mb-3">
-                            <label asp-for="Nombre" class="form-label fw-bold"></label>
-                            <input asp-for="Nombre" class="form-control" placeholder="Ej. Almacén Central" autofocus />
-                            <span asp-validation-for="Nombre" class="text-danger"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="Ubicacion" class="form-label fw-bold"></label>
-                            <input asp-for="Ubicacion" class="form-control" placeholder="Ej. Av. Los Incas 123 - Sector A" />
-                            <span asp-validation-for="Ubicacion" class="text-danger"></span>
+                            <label asp-for="Nombre" class="form-label small fw-semibold text-secondary">Nombre <span class="text-danger">*</span></label>
+                            <input asp-for="Nombre" class="form-control form-control-sm" placeholder="Ej. Almacén Central" autofocus autocomplete="off" />
+                            <span asp-validation-for="Nombre" class="text-danger small"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="Descripcion" class="form-label fw-bold"></label>
-                            <textarea asp-for="Descripcion" class="form-control" rows="3" placeholder="Información o detalles adicionales sobre este almacén..."></textarea>
-                            <span asp-validation-for="Descripcion" class="text-danger"></span>
+                            <label asp-for="Ubicacion" class="form-label small fw-semibold text-secondary">Ubicación <span class="text-danger">*</span></label>
+                            <input asp-for="Ubicacion" class="form-control form-control-sm" placeholder="Ej. Av. Los Incas 123 - Sector A" autocomplete="off" />
+                            <span asp-validation-for="Ubicacion" class="text-danger small"></span>
                         </div>
 
-                        <div class="d-flex justify-content-between align-items-center mt-4">
-                            <a asp-action="Index" class="btn btn-outline-secondary">
-                                <i class="bi bi-arrow-left me-1"></i> Cancelar
-                            </a>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-check-circle me-1"></i> Guardar Almacén
-                            </button>
+                        <div class="mb-0">
+                            <label asp-for="Descripcion" class="form-label small fw-semibold text-secondary">Descripción</label>
+                            <textarea asp-for="Descripcion" class="form-control form-control-sm" rows="3" placeholder="Detalles o especificaciones sobre este almacén..." style="resize: none;"></textarea>
+                            <span asp-validation-for="Descripcion" class="text-danger small"></span>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                    <div class="card-footer bg-light border-top py-2 px-4 d-flex justify-content-between align-items-center">
+                        <a asp-action="Index" class="btn btn-sm btn-light border text-secondary fw-medium px-3">
+                            <i class="bi bi-arrow-left me-1"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-sm btn-primary fw-medium px-3">
+                            <i class="bi bi-check-lg me-1"></i> Guardar Almacén
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

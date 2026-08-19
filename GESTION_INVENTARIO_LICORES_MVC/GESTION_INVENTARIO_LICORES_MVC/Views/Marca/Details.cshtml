@@ -4,43 +4,53 @@
     ViewData["Title"] = "Detalles de la Marca";
 }
 
-<div class="container mt-4" style="max-width: 650px;">
-    <div class="card shadow-sm">
-        <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
-            <h4 class="mb-0"><i class="bi bi-info-circle me-2"></i>Detalles de la Marca</h4>
-            <span class="badge bg-light text-dark fs-6">ID #@Model.IdMarca</span>
+<div class="container py-3" style="max-width: 640px;">
+    <div class="card border-0 shadow-sm rounded-3">
+        <!-- Encabezado de tarjeta -->
+        <div class="card-header bg-white border-bottom py-3 px-4 d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-tags text-primary fs-5"></i>
+                <h5 class="fw-bold text-dark mb-0">Detalles de la Marca</h5>
+            </div>
+            <span class="badge bg-light text-secondary border font-monospace">ID #@Model.IdMarca</span>
         </div>
-        <div class="card-body">
-            <dl class="row mb-0 fs-6">
-                <dt class="col-sm-4 text-muted">Nombre:</dt>
-                <dd class="col-sm-8 fw-bold">@Model.Nombre</dd>
 
-                <hr class="my-2" />
+        <div class="card-body p-4">
+            <div class="row g-3">
+                <div class="col-sm-6">
+                    <span class="text-muted small text-uppercase fw-semibold d-block">Nombre de la Marca</span>
+                    <p class="fs-5 fw-bold text-dark mb-0 mt-1">@Model.Nombre</p>
+                </div>
 
-                <dt class="col-sm-4 text-muted">País de Origen:</dt>
-                <dd class="col-sm-8">@(string.IsNullOrEmpty(Model.PaisOrigen) ? "No registrado" : Model.PaisOrigen)</dd>
+                <div class="col-sm-6">
+                    <span class="text-muted small text-uppercase fw-semibold d-block">Estado</span>
+                    <div class="mt-1">
+                        @if (Model.Estado)
+                        {
+                            <span class="badge bg-success-subtle text-success px-2 py-1">Activo</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary-subtle text-secondary px-2 py-1">Inactivo</span>
+                        }
+                    </div>
+                </div>
 
-                <hr class="my-2" />
+                <div class="col-12"><hr class="my-1 opacity-25" /></div>
 
-                <dt class="col-sm-4 text-muted">Estado:</dt>
-                <dd class="col-sm-8">
-                    @if (Model.Estado)
-                    {
-                        <span class="badge bg-success">Activo</span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-secondary">Inactivo</span>
-                    }
-                </dd>
-            </dl>
+                <div class="col-12">
+                    <span class="text-muted small text-uppercase fw-semibold d-block">País de Origen</span>
+                    <p class="text-dark fw-medium mb-0 mt-1">@(string.IsNullOrEmpty(Model.PaisOrigen) ? "Sin registro de país." : Model.PaisOrigen)</p>
+                </div>
+            </div>
         </div>
-        <div class="card-footer bg-light d-flex justify-content-between">
-            <a asp-action="Index" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left me-1"></i> Volver al listado
+
+        <div class="card-footer bg-light border-top py-3 px-4 d-flex justify-content-between align-items-center">
+            <a asp-action="Index" class="btn btn-sm btn-light border text-secondary fw-medium">
+                <i class="bi bi-arrow-left me-1"></i> Volver
             </a>
-            <a asp-action="Edit" asp-route-id="@Model.IdMarca" class="btn btn-warning">
-                <i class="bi bi-pencil-square me-1"></i> Editar
+            <a asp-action="Edit" asp-route-id="@Model.IdMarca" class="btn btn-sm btn-primary fw-medium px-3">
+                <i class="bi bi-pencil me-1"></i> Editar
             </a>
         </div>
     </div>

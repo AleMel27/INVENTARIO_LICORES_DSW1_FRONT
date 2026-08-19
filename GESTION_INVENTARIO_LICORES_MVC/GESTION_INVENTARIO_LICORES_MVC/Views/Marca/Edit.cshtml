@@ -5,40 +5,49 @@
     long idMarca = ViewData["IdMarca"] != null ? (long)ViewData["IdMarca"] : 0;
 }
 
-<div class="container mt-4" style="max-width: 600px;">
+<div class="container py-3" style="max-width: 640px;">
     @if (TempData["Error"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+        <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm rounded-3 mb-3" role="alert">
             <i class="bi bi-exclamation-triangle-fill me-2"></i>@TempData["Error"]
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
 
-    <div class="card shadow-sm">
-        <div class="card-header bg-warning text-dark">
-            <h4 class="mb-0"><i class="bi bi-pencil-square me-2"></i>Editar Marca #@idMarca</h4>
+    <div class="card border-0 shadow-sm rounded-3">
+        <div class="card-header bg-white border-bottom py-3 px-4 d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-pencil-square text-primary fs-5"></i>
+                <h5 class="fw-bold text-dark mb-0">Editar Marca</h5>
+            </div>
+            <span class="badge bg-light text-secondary border font-monospace">ID #@idMarca</span>
         </div>
-        <div class="card-body">
+
+        <div class="card-body p-4">
             <form asp-action="Edit" asp-route-id="@idMarca" method="post">
                 @Html.AntiForgeryToken()
 
-                <div class="mb-3">
-                    <label asp-for="Nombre" class="form-label fw-bold">Nombre <span class="text-danger">*</span></label>
-                    <input asp-for="Nombre" class="form-control" placeholder="Ingrese el nombre de la marca" autocomplete="off" />
-                    <span asp-validation-for="Nombre" class="text-danger small"></span>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label asp-for="Nombre" class="form-label small fw-semibold text-secondary">
+                            Nombre <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="Nombre" class="form-control form-control-sm" placeholder="Ingrese el nombre de la marca" autocomplete="off" />
+                        <span asp-validation-for="Nombre" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="PaisOrigen" class="form-label small fw-semibold text-secondary">País de Origen</label>
+                        <input asp-for="PaisOrigen" class="form-control form-control-sm" placeholder="Ej. Perú, Escocia, Chile..." autocomplete="off" />
+                        <span asp-validation-for="PaisOrigen" class="text-danger small"></span>
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label asp-for="PaisOrigen" class="form-label fw-bold">País de Origen</label>
-                    <input asp-for="PaisOrigen" class="form-control" placeholder="Ej. Perú, Chile, España..." autocomplete="off" />
-                    <span asp-validation-for="PaisOrigen" class="text-danger small"></span>
-                </div>
-
-                <div class="d-flex justify-content-end gap-2 mt-4">
-                    <a asp-action="Index" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-left me-1"></i> Cancelar
+                <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                    <a asp-action="Index" class="btn btn-sm btn-light border text-secondary fw-medium px-3">
+                        Cancelar
                     </a>
-                    <button type="submit" class="btn btn-warning">
+                    <button type="submit" class="btn btn-sm btn-primary fw-medium px-3">
                         <i class="bi bi-check-lg me-1"></i> Actualizar Marca
                     </button>
                 </div>

@@ -21,7 +21,7 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
         {
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Dashboard");
             }
             return View();
         }
@@ -43,10 +43,8 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
                 return View(model);
             }
 
-            // 1. Guardar el Token real de la API en la Sesión (Reemplaza el token estático)
             HttpContext.Session.SetString("Token", resultado.Token);
 
-            // 2. Crear las Claims para la Cookie de Autenticación
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, resultado.Usuario.IdUsuario.ToString()),
@@ -63,24 +61,21 @@ namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
                 ExpiresUtc = resultado.Expiracion
             };
 
-            // 3. Iniciar sesión mediante Cookie
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity),
                 authProperties
             );
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Dashboard");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
-            // Limpiar la cookie de autenticación
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            // Limpiar las variables guardadas en la sesión (incluyendo el token)
             HttpContext.Session.Clear();
 
             return RedirectToAction("Login", "Auth");

@@ -4,93 +4,107 @@
     ViewData["Title"] = "Crear Producto";
 }
 
-<div class="container mt-4" style="max-width: 750px;">
+<div class="container py-3" style="max-width: 760px;">
     @if (TempData["Error"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+        <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm rounded-3 mb-3" role="alert">
             <i class="bi bi-exclamation-triangle-fill me-2"></i>@TempData["Error"]
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
 
-    <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white">
-            <h4 class="mb-0"><i class="bi bi-box-seam me-2"></i>Registrar Nuevo Producto</h4>
+    <div class="card border-0 shadow-sm rounded-3">
+        <div class="card-header bg-white border-bottom py-3 px-4">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-box-seam-fill text-primary fs-5"></i>
+                <h5 class="fw-bold text-dark mb-0">Registrar Nuevo Producto</h5>
+            </div>
         </div>
-        <div class="card-body">
+        <div class="card-body p-4">
             <form asp-action="Create" method="post">
                 @Html.AntiForgeryToken()
 
-                <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <label asp-for="Codigo" class="form-label fw-bold">Código <span class="text-danger">*</span></label>
-                        <input asp-for="Codigo" class="form-control" placeholder="Ej. PROD-001" autocomplete="off" />
+                <div class="row g-3">
+                    <!-- CÓDIGO AUTOGENERADO -->
+                    <div class="col-md-4">
+                        <label asp-for="Codigo" class="form-label small fw-semibold text-secondary">Código <span class="text-danger">*</span></label>
+                        <div class="input-group input-group-sm">
+                            <input asp-for="Codigo" id="txtCodigo" class="form-control font-monospace bg-light" readonly tabindex="-1" placeholder="Autogenerado..." />
+                            <button class="btn btn-outline-secondary" type="button" id="btnRegenerar" title="Regenerar código">
+                                <i class="bi bi-arrow-clockwise"></i>
+                            </button>
+                        </div>
                         <span asp-validation-for="Codigo" class="text-danger small"></span>
                     </div>
 
-                    <div class="col-md-8 mb-3">
-                        <label asp-for="Nombre" class="form-label fw-bold">Nombre <span class="text-danger">*</span></label>
-                        <input asp-for="Nombre" class="form-control" placeholder="Ej. Whisky Red Label 750ml" autocomplete="off" />
+                    <div class="col-md-8">
+                        <label asp-for="Nombre" class="form-label small fw-semibold text-secondary">Nombre <span class="text-danger">*</span></label>
+                        <input asp-for="Nombre" id="txtNombre" class="form-control form-control-sm" placeholder="Ej. Whisky Red Label" autocomplete="off" />
                         <span asp-validation-for="Nombre" class="text-danger small"></span>
                     </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="IdCategoria" class="form-label fw-bold">Categoría <span class="text-danger">*</span></label>
-                        <select asp-for="IdCategoria" class="form-select" asp-items="ViewBag.Categorias">
-                            <option value="">-- Seleccione Categoría --</option>
+                    <div class="col-md-6">
+                        <label asp-for="IdCategoria" class="form-label small fw-semibold text-secondary">Categoría <span class="text-danger">*</span></label>
+                        <select asp-for="IdCategoria" class="form-select form-select-sm" asp-items="ViewBag.Categorias">
+                            <option value="">-- Seleccionar --</option>
                         </select>
                         <span asp-validation-for="IdCategoria" class="text-danger small"></span>
                     </div>
 
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="IdMarca" class="form-label fw-bold">Marca <span class="text-danger">*</span></label>
-                        <select asp-for="IdMarca" class="form-select" asp-items="ViewBag.Marcas">
-                            <option value="">-- Seleccione Marca --</option>
+                    <div class="col-md-6">
+                        <label asp-for="IdMarca" class="form-label small fw-semibold text-secondary">Marca <span class="text-danger">*</span></label>
+                        <select asp-for="IdMarca" class="form-select form-select-sm" asp-items="ViewBag.Marcas">
+                            <option value="">-- Seleccionar --</option>
                         </select>
                         <span asp-validation-for="IdMarca" class="text-danger small"></span>
                     </div>
-                </div>
 
-                <div class="mb-3">
-                    <label asp-for="Descripcion" class="form-label fw-bold">Descripción</label>
-                    <textarea asp-for="Descripcion" class="form-control" rows="2" placeholder="Detalles u observaciones del producto..."></textarea>
-                    <span asp-validation-for="Descripcion" class="text-danger small"></span>
-                </div>
+                    <div class="col-12">
+                        <label asp-for="Descripcion" class="form-label small fw-semibold text-secondary">Descripción</label>
+                        <textarea asp-for="Descripcion" class="form-control form-control-sm" rows="2" placeholder="Detalles u observaciones del producto..." style="resize: none;"></textarea>
+                        <span asp-validation-for="Descripcion" class="text-danger small"></span>
+                    </div>
 
-                <div class="row">
-                    <div class="col-md-3 mb-3">
-                        <label asp-for="CapacidadMl" class="form-label fw-bold">Capacidad (ml) <span class="text-danger">*</span></label>
-                        <input asp-for="CapacidadMl" type="number" class="form-control" placeholder="750" />
+                    <div class="col-md-3">
+                        <label asp-for="CapacidadMl" class="form-label small fw-semibold text-secondary">Capacidad <span class="text-danger">*</span></label>
+                        <div class="input-group input-group-sm">
+                            <input asp-for="CapacidadMl" id="txtCapacidad" type="number" class="form-control" placeholder="750" />
+                            <span class="input-group-text bg-light text-muted">ml</span>
+                        </div>
                         <span asp-validation-for="CapacidadMl" class="text-danger small"></span>
                     </div>
 
-                    <div class="col-md-3 mb-3">
-                        <label asp-for="GradoAlcoholico" class="form-label fw-bold">Grado Alc. (%)</label>
-                        <input asp-for="GradoAlcoholico" type="number" step="0.1" class="form-control" placeholder="40.0" />
+                    <div class="col-md-3">
+                        <label asp-for="GradoAlcoholico" class="form-label small fw-semibold text-secondary">Grado Alc.</label>
+                        <div class="input-group input-group-sm">
+                            <input asp-for="GradoAlcoholico" type="number" step="0.1" class="form-control" placeholder="40.0" />
+                            <span class="input-group-text bg-light text-muted">%</span>
+                        </div>
                         <span asp-validation-for="GradoAlcoholico" class="text-danger small"></span>
                     </div>
 
-                    <div class="col-md-3 mb-3">
-                        <label asp-for="PrecioVenta" class="form-label fw-bold">Precio (S/) <span class="text-danger">*</span></label>
-                        <input asp-for="PrecioVenta" type="number" step="0.01" class="form-control" placeholder="0.00" />
+                    <div class="col-md-3">
+                        <label asp-for="PrecioVenta" class="form-label small fw-semibold text-secondary">Precio <span class="text-danger">*</span></label>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-light text-muted">S/</span>
+                            <input asp-for="PrecioVenta" type="number" step="0.01" class="form-control" placeholder="0.00" />
+                        </div>
                         <span asp-validation-for="PrecioVenta" class="text-danger small"></span>
                     </div>
 
-                    <div class="col-md-3 mb-3">
-                        <label asp-for="StockMinimo" class="form-label fw-bold">Stock Mínimo</label>
-                        <input asp-for="StockMinimo" type="number" class="form-control" placeholder="5" />
+                    <div class="col-md-3">
+                        <label asp-for="StockMinimo" class="form-label small fw-semibold text-secondary">Stock Mínimo</label>
+                        <input asp-for="StockMinimo" type="number" class="form-control form-control-sm" placeholder="5" />
                         <span asp-validation-for="StockMinimo" class="text-danger small"></span>
                     </div>
                 </div>
 
-                <div class="d-flex justify-content-end gap-2 mt-4">
-                    <a asp-action="Index" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-left me-1"></i> Cancelar
+                <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                    <a asp-action="Index" class="btn btn-sm btn-light border text-secondary fw-medium px-3">
+                        Cancelar
                     </a>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-save me-1"></i> Guardar Producto
+                    <button type="submit" class="btn btn-sm btn-primary fw-medium px-3">
+                        <i class="bi bi-check-lg me-1"></i> Guardar Producto
                     </button>
                 </div>
             </form>
@@ -100,4 +114,54 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const txtNombre = document.getElementById('txtNombre');
+            const txtCapacidad = document.getElementById('txtCapacidad');
+            const txtCodigo = document.getElementById('txtCodigo');
+            const btnRegenerar = document.getElementById('btnRegenerar');
+
+            function generarCodigo() {
+                const nombre = txtNombre ? txtNombre.value.trim() : "";
+                const capacidad = txtCapacidad ? txtCapacidad.value.trim() : "";
+
+                if (!nombre) {
+                    txtCodigo.value = "";
+                    return;
+                }
+
+                // Limpiar caracteres especiales y separar palabras
+                const palabras = nombre
+                    .replace(/[^a-zA-Z0-9\s]/g, "")
+                    .toUpperCase()
+                    .split(/\s+/)
+                    .filter(p => p.length > 0);
+
+                let codigoBase = "";
+
+                if (palabras.length >= 3) {
+                    // Tomar 3 letras de las primeras 3 palabras (Ej: Jack Daniel's Old -> JAC-DAN-OLD)
+                    codigoBase = palabras[0].substring(0, 3) + "-" + palabras[1].substring(0, 3) + "-" + palabras[2].substring(0, 3);
+                } else if (palabras.length === 2) {
+                    // Tomar 3 letras de cada palabra (Ej: Ballantine's Finest -> BAL-FIN)
+                    codigoBase = palabras[0].substring(0, 3) + "-" + palabras[1].substring(0, 3);
+                } else if (palabras.length === 1) {
+                    // Tomar hasta 6 caracteres de la única palabra (Ej: Cartavio -> CARTAV)
+                    codigoBase = palabras[0].substring(0, 6);
+                }
+
+                const sufijoCapacidad = capacidad ? `-${capacidad}` : "";
+                txtCodigo.value = `${codigoBase}${sufijoCapacidad}`;
+            }
+
+            // Eventos para auto-completar dinámicamente al escribir
+            if (txtNombre) txtNombre.addEventListener('input', generarCodigo);
+            if (txtCapacidad) txtCapacidad.addEventListener('input', generarCodigo);
+            if (btnRegenerar) btnRegenerar.addEventListener('click', generarCodigo);
+
+            // Generar código inicial si el campo de texto ya tenía un valor por defecto
+            generarCodigo();
+        });
+    </script>
 }

@@ -1,22 +1,124 @@
-html {
-  font-size: 14px;
+/* ==========================================
+   Estructura Principal y Flexbox
+   ========================================== */
+#wrapper {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+/* Sidebar Fijo en pantalla */
+#sidebar-wrapper {
+    width: 260px;
+    min-width: 260px;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Permite scroll interno si hay muchos elementos */
+    overflow-x: hidden;
+    transition: width 0.25s ease, min-width 0.25s ease;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+/* Área de contenido principal */
+#page-content-wrapper {
+    flex: 1;
+    min-width: 0; /* Previene desbordamiento horizontal */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    transition: all 0.25s ease;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+.top-navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1030;
 }
 
-body {
-  margin-bottom: 60px;
+/* ==========================================
+   Componentes e Interacciones
+   ========================================== */
+
+/* Botón interactivo de la copita */
+.btn-toggle-sidebar {
+    background: transparent;
+    border: none;
+    color: #fff;
+    padding: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: transform 0.2s ease, color 0.2s ease, background-color 0.2s ease;
 }
+
+    .btn-toggle-sidebar:hover {
+        transform: scale(1.15);
+        color: #0d6efd;
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+/* Hover suave en los enlaces del menú */
+.list-group-item-action {
+    transition: all 0.2s ease;
+}
+
+    .list-group-item-action:hover {
+        background-color: #2c3036 !important;
+        color: #0d6efd !important;
+        padding-left: 1.25rem !important;
+    }
+
+/* ==========================================
+   ESTADO COLAPSADO (RESCATADO DE V1)
+   ========================================== */
+
+/* Reducción de ancho a 70px */
+#sidebar-wrapper.collapsed {
+    width: 70px !important;
+    min-width: 70px !important;
+}
+
+    /* Ocultar únicamente las etiquetas de texto */
+    #sidebar-wrapper.collapsed .sidebar-title-text,
+    #sidebar-wrapper.collapsed .link-text,
+    #sidebar-wrapper.collapsed .btn-logout-text {
+        display: none !important;
+    }
+
+    /* Centrado estético en estado colapsado */
+    #sidebar-wrapper.collapsed .sidebar-heading {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        justify-content: center !important;
+    }
+
+    #sidebar-wrapper.collapsed .list-group-item {
+        text-align: center;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+        #sidebar-wrapper.collapsed .list-group-item i {
+            margin-right: 0 !important;
+            font-size: 1.25rem;
+        }
+
+    #sidebar-wrapper.collapsed .sidebar-footer {
+        padding: 10px 5px !important;
+    }
+
+        #sidebar-wrapper.collapsed .sidebar-footer button {
+            padding: 8px 0 !important;
+            justify-content: center !important;
+        }

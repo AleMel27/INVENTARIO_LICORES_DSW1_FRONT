@@ -2,6 +2,7 @@
 using GESTION_INVENTARIO_LICORES_MVC.DTOs.Response;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -11,6 +12,7 @@ using System.Text;
 
 namespace GESTION_INVENTARIO_LICORES_MVC.Controllers
 {
+    [Authorize(Roles = "ADMIN")]
     public class AlmacenController : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory;
